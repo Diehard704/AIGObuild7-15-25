@@ -1,128 +1,145 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Search, Bell, User, Menu, X } from 'lucide-react'
+import { CreditDisplay } from './credit-display'
 
 export function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const pathname = usePathname()
-
-  const navItems = [
-    { href: '/', label: 'Generate', active: pathname === '/' },
-    { href: '/pricing', label: 'Pricing', active: pathname === '/pricing' },
-    { href: '/dashboard', label: 'Dashboard', active: pathname === '/dashboard' },
-    { href: '/about', label: 'About', active: pathname === '/about' }
-  ]
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800">
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="fixed top-0 left-64 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-gray-800/50"
+    >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center"
-            >
-              <span className="text-white font-bold text-lg">⚡</span>
-            </motion.div>
-            <span className="text-xl font-bold text-blue-400">
-              FragmentsPro
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-3 py-2 rounded-lg transition-colors ${
-                  item.active
-                    ? 'text-blue-400 bg-blue-500/10'
-                    : 'text-gray-300 hover:text-blue-400 hover:bg-gray-800/50'
-                }`}
+          {/* Left Section */}
+          <div className="flex items-center space-x-8">
+            {/* Search Bar */}
+            <div className="relative">
+              <motion.div
+                className={`flex items-center ${isSearchOpen ? 'w-80' : 'w-64'} transition-all duration-300`}
+                whileHover={{ scale: 1.02 }}
               >
-                {item.label}
-              </Link>
-            ))}
+                <div className="relative w-full">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search projects, templates..."
+                    className="w-full pl-10 pr-4 py-2 bg-gray-900/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300 glass-dark"
+                  />
+                </div>
+              </motion.div>
+            </div>
           </div>
 
-          {/* User Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="text-sm text-gray-400">
-              <span className="text-green-400 font-semibold">12</span> credits
-            </div>
-            
+          {/* Right Section */}
+          <div className="flex items-center space-x-4">
+            {/* Notifications */}
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative p-2 rounded-xl bg-gray-900/50 border border-gray-700/50 hover:bg-gray-800/50 transition-all duration-300 glass-dark group"
+            >
+              <Bell className="w-5 h-5 text-gray-300 group-hover:text-white transition-colors" />
+              <motion.div
+                className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </motion.button>
+
+            {/* Credits Display */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="hidden md:block"
+            >
+              <CreditDisplay credits={12} compact={true} />
+            </motion.div>
+
+            {/* User Menu */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/pricing'}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center space-x-2 p-2 rounded-xl bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 hover:from-blue-600/30 hover:to-purple-600/30 transition-all duration-300 group"
             >
-              Buy Credits
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                <User className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-white font-medium hidden lg:block">User</span>
+            </motion.button>
+
+            {/* Mobile Menu Button */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-xl bg-gray-900/50 border border-gray-700/50 hover:bg-gray-800/50 transition-all duration-300 glass-dark"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5 text-gray-300" />
+              ) : (
+                <Menu className="w-5 h-5 text-gray-300" />
+              )}
             </motion.button>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="md:hidden py-4 border-t border-gray-800"
-          >
-            <div className="space-y-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`block px-3 py-2 rounded-lg transition-colors ${
-                    item.active
-                      ? 'text-blue-400 bg-blue-500/10'
-                      : 'text-gray-300 hover:text-blue-400 hover:bg-gray-800/50'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              
-              <div className="pt-4 mt-4 border-t border-gray-700">
-                <div className="px-3 py-2 text-sm text-gray-400">
-                  <span className="text-green-400 font-semibold">12</span> credits remaining
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="lg:hidden border-t border-gray-800/50 mt-4 pb-4"
+            >
+              <div className="space-y-4 pt-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400 text-sm">Credits</span>
+                  <CreditDisplay credits={12} compact={true} />
                 </div>
-                <button
-                  onClick={() => {
-                    window.location.href = '/pricing'
-                    setIsMenuOpen(false)
-                  }}
-                  className="w-full mt-2 px-3 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-colors"
-                >
-                  Buy Credits
-                </button>
+                <div className="space-y-2">
+                  <motion.a
+                    href="/dashboard"
+                    whileHover={{ x: 5 }}
+                    className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all duration-200"
+                  >
+                    Dashboard
+                  </motion.a>
+                  <motion.a
+                    href="/build"
+                    whileHover={{ x: 5 }}
+                    className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all duration-200"
+                  >
+                    New Project
+                  </motion.a>
+                  <motion.a
+                    href="/pricing"
+                    whileHover={{ x: 5 }}
+                    className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all duration-200"
+                  >
+                    Pricing
+                  </motion.a>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </nav>
+
+      {/* Animated Border */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent"
+        animate={{ opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 3, repeat: Infinity }}
+      />
+    </motion.nav>
   )
 }

@@ -1,158 +1,78 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
-import { FragmentSchema } from '@/lib/schema'
-import { ManusStyleLoader } from '@/components/manus-style-loader'
-import { AppPreview } from '@/components/app-preview'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { TypewriterChat } from '@/components/typewriter-chat'
 
 export default function BuildPage() {
-  const searchParams = useSearchParams()
-  const prompt = searchParams.get('prompt')
-  const [currentPhase, setCurrentPhase] = useState<'loading' | 'preview' | 'error'>('loading')
-  const [fragment, setFragment] = useState<FragmentSchema | null>(null)
-  const [sandboxData, setSandboxData] = useState<any>(null)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  useEffect(() => {
-    if (prompt) {
-      generateApp(prompt)
-    }
-  }, [prompt])
-
-  const generateApp = async (userPrompt: string) => {
-    try {
-      setCurrentPhase('loading')
-      
-      // Phase 1: Generate fragment via Claude 3.5 Sonnet API
-      const chatResponse = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [
-            { role: 'user', content: userPrompt }
-          ],
-          userID: 'anonymous',
-          teamID: undefined,
-          template: 'nextjs-developer'
-        })
-      })
-
-      if (!chatResponse.ok) {
-        const errorText = await chatResponse.text()
-        throw new Error(`Claude API Error: ${chatResponse.status} - ${errorText}`)
-      }
-
-      // Parse streaming response from Claude 3.5 Sonnet
-      const reader = chatResponse.body?.getReader()
-      const decoder = new TextDecoder()
-      let accumulatedData = ''
-      let parsedFragment: FragmentSchema | null = null
-
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-          
-          const chunk = decoder.decode(value, { stream: true })
-          accumulatedData += chunk
-          
-          // Parse Claude streaming object format
-          const lines = accumulatedData.split('\n')
-          for (const line of lines) {
-            if (line.trim().startsWith('0:')) {
-              try {
-                const jsonStr = line.substring(2).trim()
-                if (jsonStr && jsonStr !== '{}') {
-                  const parsed = JSON.parse(jsonStr)
-                  if (parsed.object && typeof parsed.object === 'object') {
-                    parsedFragment = parsed.object as FragmentSchema
-                  }
-                }
-              } catch (parseError) {
-                console.log('Parsing Claude response chunk:', parseError)
-              }
-            }
-          }
-        }
-      }
-
-      // Fallback parsing for direct Claude response
-      if (!parsedFragment && accumulatedData) {
-        try {
-          const fallbackParsed = JSON.parse(accumulatedData)
-          if (fallbackParsed.object) {
-            parsedFragment = fallbackParsed.object as FragmentSchema
-          } else if (fallbackParsed.code || fallbackParsed.title) {
-            parsedFragment = fallbackParsed as FragmentSchema
-          }
-        } catch (error) {
-          console.error('Claude response parsing failed:', error)
-        }
-      }
-
-      if (!parsedFragment) {
-        throw new Error('Failed to parse fragment from Claude 3.5 Sonnet response')
-      }
-
-      setFragment(parsedFragment)
-
-      // Phase 2: Create E2B sandbox for preview
-      const sandboxResponse = await fetch('/api/sandbox', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fragment: parsedFragment,
-          userID: 'anonymous',
-          teamID: undefined,
-          accessToken: undefined
-        })
-      })
-
-      if (!sandboxResponse.ok) {
-        const sandboxError = await sandboxResponse.text()
-        throw new Error(`E2B Sandbox Error: ${sandboxResponse.status} - ${sandboxError}`)
-      }
-
-      const sandboxResult = await sandboxResponse.json()
-      setSandboxData(sandboxResult)
-      setCurrentPhase('preview')
-
-    } catch (err) {
-      console.error('Claude 3.5 Sonnet app generation error:', err)
-      setError(err instanceof Error ? err.message : 'Failed to generate app with Claude 3.5 Sonnet')
-      setCurrentPhase('error')
-    }
-  }
-
-  if (currentPhase === 'loading') {
-    return <ManusStyleLoader prompt={prompt || ''} />
-  }
-
-  if (currentPhase === 'error') {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-red-400 text-center">
-          <h2 className="text-2xl mb-4">Generation Failed</h2>
-          <p>{error}</p>
-          <button 
-            onClick={() => window.history.back()}
-            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    )
+  const handleGenerateApp = (prompt: string) => {
+    setIsGenerating(true)
+    // Navigate to the generation page with the prompt
+    router.push(`/build/generate?prompt=${encodeURIComponent(prompt)}`)
   }
 
   return (
-    <div className="min-h-screen bg-black">
-      <AppPreview 
-        fragment={fragment}
-        sandboxData={sandboxData}
-        prompt={prompt || ''}
-      />
+    <div className="min-h-screen bg-black text-white flex flex-col">
+      {/* Header */}
+      <div className="border-b border-gray-800 p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-blue-400">
+                Generate Your App
+              </h1>
+              <p className="text-gray-400 mt-1">
+                Describe your idea and watch AI build it for you
+              </p>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => router.push('/dashboard')}
+              className="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium transition-colors"
+            >
+              View Dashboard
+            </motion.button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="max-w-4xl w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-2xl font-bold text-white mb-4">
+              What would you like to build today?
+            </h2>
+            <p className="text-gray-400 text-lg">
+              Describe your app idea in natural language and our AI will generate it for you
+            </p>
+          </motion.div>
+
+          <TypewriterChat onGenerate={handleGenerateApp} />
+
+          {/* Loading State */}
+          {isGenerating && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center mt-8"
+            >
+              <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-blue-400">Preparing your app generation...</p>
+            </motion.div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
