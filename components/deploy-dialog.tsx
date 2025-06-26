@@ -60,7 +60,7 @@ export function DeployDialog({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="default">
-          <Logo style="e2b" width={16} height={16} className="mr-2" />
+          <Logo width={16} height={16} className="mr-2" />
           Deploy to E2B
         </Button>
       </DropdownMenuTrigger>
@@ -76,6 +76,7 @@ export function DeployDialog({
           <a
             href="https://e2b.dev/docs/pricing"
             target="_blank"
+            rel="noopener"
             className="underline"
           >
             Compute pricing
@@ -87,6 +88,7 @@ export function DeployDialog({
           <a
             href="https://e2b.dev/dashboard?tab=billing"
             target="_blank"
+            rel="noopener"
             className="underline"
           >
             Pro tier

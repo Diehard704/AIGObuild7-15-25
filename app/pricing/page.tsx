@@ -138,8 +138,8 @@ export default function PricingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className={`relative bg-gray-900 rounded-2xl border p-8 ${tier.popular
-                  ? 'border-purple-500 scale-105 shadow-2xl shadow-purple-500/20'
-                  : 'border-gray-700 hover:border-gray-600'
+                ? 'border-purple-500 scale-105 shadow-2xl shadow-purple-500/20'
+                : 'border-gray-700 hover:border-gray-600'
                 } transition-all duration-300 hover:scale-105`}
             >
               {tier.popular && (
@@ -205,8 +205,8 @@ export default function PricingPage() {
                 onClick={() => handlePurchase(tier)}
                 disabled={isLoading}
                 className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 ${tier.popular
-                    ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg shadow-purple-500/25'
-                    : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg shadow-purple-500/25'
+                  : 'bg-gray-700 hover:bg-gray-600 text-white'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {isLoading && selectedTier === tier.name ? (
@@ -262,49 +262,67 @@ export default function PricingPage() {
                   <td className="text-center py-4 px-4 text-gray-300">Priority</td>
                   <td className="text-center py-4 px-4 text-gray-300">Dedicated</td>
                 </tr>
-                <tr>
+                <tr className="border-b border-gray-800">
                   <td className="py-4 px-4 text-white">Team Features</td>
                   <td className="text-center py-4 px-4 text-gray-300">-</td>
                   <td className="text-center py-4 px-4 text-gray-300">✓</td>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-green-400 mb-2">4,000</div>
-                      <p className="text-gray-400">Tokens per Generation</p>
-                      <p className="text-sm text-gray-500 mt-2">
-                        Optimized for comprehensive app creation
-                      </p>
-                    </div>
-
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-blue-400 mb-2">5+</div>
-                      <p className="text-gray-400">Framework Templates</p>
-                      <p className="text-sm text-gray-500 mt-2">
-                        Next.js, Vue, Streamlit, Python & more
-                      </p>
-                    </div>
-
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-purple-400 mb-2">60%</div>
-                      <p className="text-gray-400">Cost Savings vs Competitors</p>
-                      <p className="text-sm text-gray-500 mt-2">
-                        Premium features at startup-friendly pricing
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Back to App */}
-                <div className="text-center mt-8">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => window.location.href = '/'}
-                    className="px-8 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium transition-colors"
-                  >
-                    ← Back to App Generation
-                  </motion.button>
-                </div>
-              </div>
+                  <td className="text-center py-4 px-4 text-gray-300">✓</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          )
+        </motion.div>
+
+        {/* Stats Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="bg-gray-900 rounded-2xl p-8 border border-gray-700 mb-16"
+        >
+          <h3 className="text-2xl font-bold text-blue-400 mb-8 text-center">
+            Why Choose FragmentsPro?
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-400 mb-2">4,000</div>
+              <p className="text-gray-400">Tokens per Generation</p>
+              <p className="text-sm text-gray-500 mt-2">
+                Optimized for comprehensive app creation
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-400 mb-2">5+</div>
+              <p className="text-gray-400">Framework Templates</p>
+              <p className="text-sm text-gray-500 mt-2">
+                Next.js, Vue, Streamlit, Python & more
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-400 mb-2">60%</div>
+              <p className="text-gray-400">Cost Savings vs Competitors</p>
+              <p className="text-sm text-gray-500 mt-2">
+                Premium features at startup-friendly pricing
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Back to App */}
+        <div className="text-center mt-8">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => window.location.href = '/'}
+            className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition-colors"
+          >
+            Back to App Builder
+          </motion.button>
+        </div>
+      </div>
+    </div>
+  )
 }

@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20'
+  apiVersion: '2025-02-24.acacia'
 })
 
 export const maxDuration = 60
@@ -51,9 +51,9 @@ export async function POST(req: Request) {
       })
 
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           sessionId: session.id,
-          url: session.url 
+          url: session.url
         }),
         {
           status: 200,
@@ -64,13 +64,13 @@ export async function POST(req: Request) {
 
     if (action === 'verify-session') {
       const { sessionId } = await req.json()
-      
+
       const session = await stripe.checkout.sessions.retrieve(sessionId)
-      
+
       if (session.payment_status === 'paid') {
         // In production, this would update the user's credit balance in database
         const creditsAwarded = parseInt(session.metadata?.credits || '0')
-        
+
         return new Response(
           JSON.stringify({
             success: true,
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
 
   } catch (error) {
     console.error('Stripe error:', error)
-    
+
     return new Response(
       JSON.stringify({
         error: 'Payment processing failed',

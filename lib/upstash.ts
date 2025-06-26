@@ -1,5 +1,6 @@
 import { Redis } from '@upstash/redis'
 import { Ratelimit } from '@upstash/ratelimit'
+import type { Duration } from '@/lib/duration'
 
 // Initialize Redis client with URL-based connection
 const redis = Redis.fromEnv() || new Redis({
@@ -12,7 +13,7 @@ export const rateLimiter = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(
     Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
-    `${process.env.RATE_LIMIT_WINDOW || 60} s`
+    `${Number(process.env.RATE_LIMIT_WINDOW) || 60}s` as Duration
   ),
 })
 

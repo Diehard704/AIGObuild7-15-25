@@ -3,8 +3,15 @@
 import { useState } from 'react'
 import { Chat } from './chat'
 import { ChatInput } from './chat-input'
+import { Message } from '@/lib/messages'
 
-export function ChatSidebar({ messages, onSendMessage }) {
+export function ChatSidebar({
+  messages,
+  onSendMessage
+}: {
+  messages: Message[]
+  onSendMessage: (message: Message) => void
+}) {
   const [input, setInput] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,16 +32,16 @@ export function ChatSidebar({ messages, onSendMessage }) {
         <h2 className="font-semibold text-gray-800">Build Assistant</h2>
         <p className="text-sm text-gray-500">Ask me to modify your app</p>
       </div>
-      
+
       {/* Chat Messages - Scrollable */}
       <div className="flex-1 overflow-y-auto p-4">
-        <Chat 
-          messages={messages} 
+        <Chat
+          messages={messages}
           isLoading={false}
-          setCurrentPreview={() => {}}
+          setCurrentPreview={() => { }}
         />
       </div>
-      
+
       {/* Chat Input - Fixed at Bottom */}
       <div className="p-4 border-t border-gray-200">
         <form onSubmit={handleSubmit} className="space-y-2">

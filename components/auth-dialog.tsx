@@ -1,5 +1,5 @@
-import Auth from '../fragments/components/auth'
-import { ViewType } from '../fragments/components/auth'
+import { AuthComponent } from './auth'
+import type { ViewType } from '@/lib/auth'
 import Logo from './logo'
 import { validateEmail } from '@/app/actions/validate-email'
 import {
@@ -39,15 +39,11 @@ export function AuthDialog({
             Sign in to Fragments
           </h1>
           <div className="w-full">
-            <Auth
+            <AuthComponent
               supabaseClient={supabase}
               view={view}
               providers={['github', 'google']}
               socialLayout="horizontal"
-              onSignUpValidate={validateEmail}
-              metadata={{
-                is_fragments_user: true,
-              }}
             />
           </div>
         </div>
