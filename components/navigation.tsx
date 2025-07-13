@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Bell, User, Menu, X } from 'lucide-react'
 import { CreditDisplay } from './credit-display'
+import { ThemeToggle } from './theme-toggle'
 
 export function Navigation() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -61,6 +62,9 @@ export function Navigation() {
             >
               <CreditDisplay credits={12} compact={true} />
             </motion.div>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* User Menu */}
             <motion.button

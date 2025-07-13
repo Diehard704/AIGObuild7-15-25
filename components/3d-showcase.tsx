@@ -1,0 +1,248 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrbitControls, Text, Box } from '@react-three/drei'
+import * as THREE from 'three'
+
+interface AppExample {
+    id: string
+    title: string
+    description: string
+    color: string
+    icon: string
+}
+
+const appExamples: AppExample[] = [
+    {
+        id: '1',
+        title: 'E-commerce Platform',
+        description: 'Modern shopping experience',
+        color: '#3B82F6',
+        icon: '🛒'
+    },
+    {
+        id: '2',
+        title: 'Task Manager',
+        description: 'Productivity at its best',
+        color: '#10B981',
+        icon: '📋'
+    },
+    {
+        id: '3',
+        title: 'Weather Dashboard',
+        description: 'Real-time data visualization',
+        color: '#8B5CF6',
+        icon: '🌤️'
+    },
+    {
+        id: '4',
+        title: 'Social Network',
+        description: 'Connect with friends',
+        color: '#F59E0B',
+        icon: '👥'
+    }
+]
+
+function FloatingApp({ app, index }: { app: AppExample; index: number }) {
+    const meshRef = useRef<THREE.Mesh>(null)
+    const [hovered, setHovered] = useState(false)
+
+    useFrame((state: any) => {
+        if (meshRef.current) {
+            const time = state.clock.getElapsedTime()
+            meshRef.current.position.y = Math.sin(time + index) * 0.5 + 2
+            meshRef.current.rotation.y = time * 0.5 + index
+            meshRef.current.rotation.x = Math.sin(time * 0.5) * 0.2
+        }
+    })
+
+    return (
+        <group
+            ref={meshRef}
+            position={[Math.cos(index * Math.PI / 2) * 3, 2, Math.sin(index * Math.PI / 2) * 3]}
+            onPointerOver={() => setHovered(true)}
+            onPointerOut={() => setHovered(false)}
+        >
+            <Box
+                args={[1.5, 1.5, 0.1]}
+                scale={hovered ? 1.2 : 1}
+            >
+                <meshStandardMaterial
+                    color={app.color}
+                    transparent
+                    opacity={hovered ? 0.9 : 0.7}
+                />
+            </Box>
+
+            <Text
+                position={[0, 0, 0.06]}
+                fontSize={0.3}
+                color="white"
+                anchorX="center"
+                anchorY="middle"
+            >
+                {app.icon}
+            </Text>
+
+            {hovered && (
+                <Text
+                    position={[0, -1, 0]}
+                    fontSize={0.15}
+                    color="white"
+                    anchorX="center"
+                    anchorY="top"
+                    maxWidth={2}
+                >
+                    {app.title}
+                </Text>
+            )}
+        </group>
+    )
+}
+
+function ParticleField() {
+    const particlesRef = useRef<THREE.Points>(null)
+    const positions = new Float32Array(1000 * 3)
+
+    for (let i = 0; i < 1000; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 20
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 20
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 20
+    }
+
+    useFrame((state: any) => {
+        if (particlesRef.current) {
+            particlesRef.current.rotation.y = state.clock.getElapsedTime() * 0.1
+        }
+    })
+
+    return (
+        <points ref={particlesRef}>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={1000}
+                    array={positions}
+                    itemSize={3}
+                    args={[positions, 3]}
+                />
+            </bufferGeometry>
+            <pointsMaterial
+                size={0.02}
+                color="#3B82F6"
+                transparent
+                opacity={0.6}
+            />
+        </points>
+    )
+}
+
+export function ThreeDShowcase() {
+    const [selectedApp, setSelectedApp] = useState<AppExample | null>(null)
+
+    return (
+        <div className="relative h-screen w-full">
+            {/* 3D Canvas */}
+            <Canvas
+                camera={{ position: [0, 5, 10], fov: 60 }}
+                className="absolute inset-0"
+            >
+                <ambientLight intensity={0.4} />
+                <pointLight position={[10, 10, 10]} intensity={1} />
+                <pointLight position={[-10, -10, -10]} intensity={0.5} />
+
+                <ParticleField />
+
+                {appExamples.map((app, index) => (
+                    <FloatingApp key={app.id} app={app} index={index} />
+                ))}
+
+                <OrbitControls
+                    enableZoom={false}
+                    enablePan={false}
+                    autoRotate
+                    autoRotateSpeed={0.5}
+                />
+            </Canvas>
+
+            {/* Overlay Content */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1 }}
+                    className="text-center pointer-events-auto"
+                >
+                    <h1 className="text-6xl md:text-8xl font-black mb-6">
+                        <span className="gradient-text">Build</span>
+                        <br />
+                        <span className="text-white">Anything with AI</span>
+                    </h1>
+
+                    <p className="text-xl md:text-2xl text-blue-200 mb-8 max-w-3xl mx-auto">
+                        Interact with the 3D showcase above to see examples of AI-generated applications
+                    </p>
+
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xl font-bold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+                    >
+                        Start Building Now
+                    </motion.button>
+                </motion.div>
+            </div>
+
+            {/* Interactive Controls */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-auto">
+                <div className="flex gap-4">
+                    {appExamples.map((app) => (
+                        <motion.button
+                            key={app.id}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => setSelectedApp(app)}
+                            className="p-3 bg-gray-800/80 backdrop-blur-sm rounded-lg border border-gray-700 hover:border-blue-500 transition-colors"
+                        >
+                            <span className="text-2xl">{app.icon}</span>
+                        </motion.button>
+                    ))}
+                </div>
+            </div>
+
+            {/* App Details Modal */}
+            {selectedApp && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center pointer-events-auto"
+                    onClick={() => setSelectedApp(null)}
+                >
+                    <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="bg-gray-900 rounded-2xl p-8 max-w-md mx-4 border border-gray-700"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="text-center">
+                            <div className="text-4xl mb-4">{selectedApp.icon}</div>
+                            <h3 className="text-2xl font-bold text-white mb-2">{selectedApp.title}</h3>
+                            <p className="text-gray-400 mb-6">{selectedApp.description}</p>
+
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
+                            >
+                                Generate This App
+                            </motion.button>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </div>
+    )
+} 
