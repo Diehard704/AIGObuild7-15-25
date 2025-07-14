@@ -13,7 +13,7 @@ if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
   })
 }
 
-export function PostHogPageview(): JSX.Element {
+export function PostHogPageview(): React.JSX.Element {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 

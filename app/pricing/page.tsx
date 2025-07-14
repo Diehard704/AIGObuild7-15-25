@@ -2,7 +2,24 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Check, Star, Zap, Crown, Users, Rocket } from 'lucide-react'
+import { M3Button } from '@/components/ui/m3-button'
+import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
+import {
+  Check,
+  Star,
+  Zap,
+  Sparkles,
+  Rocket,
+  Shield,
+  Clock,
+  Users,
+  Globe,
+  Award,
+  TrendingUp,
+  Crown,
+  Gift,
+  ArrowRight
+} from 'lucide-react'
 
 interface PricingTier {
   name: string
@@ -14,11 +31,12 @@ interface PricingTier {
   tokensPerCredit: number
   icon: React.ReactNode
   color: string
+  badge?: string
 }
 
 export default function PricingPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [selectedTier, setSelectedTier] = useState<string | null>(null)
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const pricingTiers: PricingTier[] = [
     {
@@ -27,15 +45,17 @@ export default function PricingPage() {
       price: 9,
       originalPrice: 15,
       features: [
-        "5 AI App Generations",
-        "Next.js & React Templates",
-        "Basic E2B Deployment",
-        "Community Support",
-        "Standard Response Time"
+        "5 app generations",
+        "4,000 tokens per generation",
+        "All templates included",
+        "Basic support",
+        "Community access",
+        "Export code"
       ],
       tokensPerCredit: 4000,
       icon: <Zap className="w-6 h-6" />,
-      color: "from-blue-500 to-blue-600"
+      color: "from-primary to-secondary",
+      badge: "Most Popular"
     },
     {
       name: "Developer Pro",
@@ -44,17 +64,18 @@ export default function PricingPage() {
       originalPrice: 40,
       popular: true,
       features: [
-        "15 AI App Generations",
-        "All Premium Templates",
-        "Advanced E2B Deployment",
-        "Priority Support",
-        "Custom Frameworks",
-        "Faster Response Time",
-        "Team Collaboration"
+        "15 app generations",
+        "4,000 tokens per generation",
+        "Priority generation queue",
+        "Advanced templates",
+        "Email support",
+        "API access",
+        "Custom deployments",
+        "Analytics dashboard"
       ],
       tokensPerCredit: 4000,
-      icon: <Crown className="w-6 h-6" />,
-      color: "from-purple-500 to-purple-600"
+      icon: <Rocket className="w-6 h-6" />,
+      color: "from-secondary to-tertiary"
     },
     {
       name: "Agency Scale",
@@ -62,24 +83,48 @@ export default function PricingPage() {
       price: 69,
       originalPrice: 120,
       features: [
-        "50 AI App Generations",
-        "Unlimited Templates",
-        "Professional E2B Hosting",
-        "Dedicated Support",
-        "Team Collaboration",
-        "Custom Integrations",
-        "Priority Queue",
-        "Advanced Analytics"
+        "50 app generations",
+        "4,000 tokens per generation",
+        "Highest priority queue",
+        "All premium templates",
+        "Priority support",
+        "Team collaboration",
+        "Custom integrations",
+        "White-label options",
+        "Dedicated account manager"
       ],
       tokensPerCredit: 4000,
-      icon: <Rocket className="w-6 h-6" />,
-      color: "from-green-500 to-green-600"
+      icon: <Crown className="w-6 h-6" />,
+      color: "from-tertiary to-warning"
+    }
+  ]
+
+  const benefits = [
+    {
+      icon: <Shield className="w-6 h-6" />,
+      title: "Secure & Reliable",
+      description: "Enterprise-grade security with 99.9% uptime guarantee"
+    },
+    {
+      icon: <Clock className="w-6 h-6" />,
+      title: "Lightning Fast",
+      description: "Generate apps in under 30 seconds with our optimized AI"
+    },
+    {
+      icon: <Users className="w-6 h-6" />,
+      title: "Community Driven",
+      description: "Join thousands of developers building amazing apps"
+    },
+    {
+      icon: <Globe className="w-6 h-6" />,
+      title: "Global Deployment",
+      description: "Deploy your apps instantly to production environments"
     }
   ]
 
   const handlePurchase = async (tier: PricingTier) => {
-    setIsLoading(true)
-    setSelectedTier(tier.name)
+    setIsProcessing(true)
+    setSelectedPlan(tier.name)
 
     try {
       const response = await fetch('/api/stripe', {
@@ -89,239 +134,328 @@ export default function PricingPage() {
           action: 'create-checkout',
           amount: tier.price,
           credits: tier.credits,
-          userID: 'anonymous'
+          userID: 'anonymous',
+          email: undefined
         })
       })
 
-      const { url } = await response.json()
-      if (url) {
+      if (response.ok) {
+        const { url } = await response.json()
         window.location.href = url
+      } else {
+        console.error('Payment failed')
       }
     } catch (error) {
-      console.error('Purchase failed:', error)
+      console.error('Payment error:', error)
     } finally {
-      setIsLoading(false)
-      setSelectedTier(null)
+      setIsProcessing(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b border-gray-800 p-6">
-        <div className="max-w-6xl mx-auto text-center">
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="border-b border-border/50 p-6"
+      >
+        <div className="max-w-7xl mx-auto text-center">
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-bold text-blue-400 mb-4"
+            className="m3-headline-large font-bold text-foreground mb-4"
+            whileHover={{ scale: 1.02 }}
           >
             Choose Your Plan
           </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-gray-400 max-w-3xl mx-auto"
-          >
-            Start building amazing applications with AI. Choose the plan that fits your needs.
-          </motion.p>
+          <p className="m3-body-large text-muted-foreground max-w-3xl mx-auto">
+            Start building amazing applications with our AI-powered platform.
+            Choose the plan that fits your development needs.
+          </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Pricing Cards */}
-      <div className="max-w-7xl mx-auto p-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
           {pricingTiers.map((tier, index) => (
             <motion.div
               key={tier.name}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative bg-gray-900 rounded-2xl border p-8 ${tier.popular
-                ? 'border-purple-500 scale-105 shadow-2xl shadow-purple-500/20'
-                : 'border-gray-700 hover:border-gray-600'
-                } transition-all duration-300 hover:scale-105`}
+              className="relative"
             >
               {tier.popular && (
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="absolute -top-4 left-1/2 transform -translate-x-1/2"
-                >
-                  <span className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <span className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-full flex items-center gap-2">
                     <Star className="w-4 h-4" />
-                    Most Popular
+                    {tier.badge}
                   </span>
-                </motion.div>
+                </div>
               )}
 
-              <div className="text-center mb-8">
-                <div className={`w-16 h-16 bg-gradient-to-r ${tier.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                  {tier.icon}
-                </div>
-
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  {tier.name}
-                </h3>
-
-                <div className="mb-4">
-                  <span className="text-4xl font-bold text-white">${tier.price}</span>
-                  {tier.originalPrice && (
-                    <span className="text-xl text-gray-500 line-through ml-2">
-                      ${tier.originalPrice}
-                    </span>
-                  )}
-                </div>
-
-                <p className="text-gray-400 mb-2">
-                  {tier.credits} App Generations
-                </p>
-                <p className="text-sm text-gray-500">
-                  {tier.tokensPerCredit.toLocaleString()} tokens per generation
-                </p>
-              </div>
-
-              <ul className="space-y-3 mb-8">
-                {tier.features.map((feature, featureIndex) => (
-                  <motion.li
-                    key={featureIndex}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + featureIndex * 0.05 }}
-                    className="flex items-center"
-                  >
-                    <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                    <span className="text-gray-300 text-sm">{feature}</span>
-                  </motion.li>
-                ))}
-              </ul>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handlePurchase(tier)}
-                disabled={isLoading}
-                className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 ${tier.popular
-                  ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg shadow-purple-500/25'
-                  : 'bg-gray-700 hover:bg-gray-600 text-white'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+              <M3Card
+                variant={tier.popular ? "elevated" : "filled"}
+                className={`h-full relative ${tier.popular ? 'ring-2 ring-primary' : ''}`}
               >
-                {isLoading && selectedTier === tier.name ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Processing...
+                <M3CardHeader className="text-center pb-4">
+                  <div className={`w-16 h-16 bg-gradient-to-r ${tier.color} rounded-2xl flex items-center justify-center mx-auto mb-4 text-white`}>
+                    {tier.icon}
                   </div>
-                ) : (
-                  'Get Started'
-                )}
-              </motion.button>
+                  <M3CardTitle className="m3-headline-medium font-bold text-foreground">
+                    {tier.name}
+                  </M3CardTitle>
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <span className="m3-display-small font-bold text-foreground">
+                      ${tier.price}
+                    </span>
+                    {tier.originalPrice && (
+                      <span className="m3-body-medium text-muted-foreground line-through">
+                        ${tier.originalPrice}
+                      </span>
+                    )}
+                  </div>
+                  <p className="m3-body-small text-muted-foreground">
+                    {tier.credits} credits • {tier.tokensPerCredit.toLocaleString()} tokens each
+                  </p>
+                </M3CardHeader>
+
+                <M3CardContent className="space-y-6">
+                  <div className="space-y-3">
+                    {tier.features.map((feature, featureIndex) => (
+                      <motion.div
+                        key={feature}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: (index * 0.1) + (featureIndex * 0.05) }}
+                        className="flex items-center gap-3"
+                      >
+                        <div className="w-5 h-5 bg-success/20 rounded-full flex items-center justify-center">
+                          <Check className="w-3 h-3 text-success" />
+                        </div>
+                        <span className="m3-body-medium text-foreground">{feature}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <M3Button
+                    variant={tier.popular ? "filled" : "outlined"}
+                    size="lg"
+                    className="w-full group"
+                    onClick={() => handlePurchase(tier)}
+                    disabled={isProcessing && selectedPlan === tier.name}
+                  >
+                    {isProcessing && selectedPlan === tier.name ? (
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
+                    )}
+                    {isProcessing && selectedPlan === tier.name ? 'Processing...' : 'Get Started'}
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </M3Button>
+                </M3CardContent>
+              </M3Card>
             </motion.div>
           ))}
         </div>
 
-        {/* Comparison Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="bg-gray-900 rounded-2xl p-8 border border-gray-700 mb-16"
-        >
-          <h3 className="text-2xl font-bold text-blue-400 mb-8 text-center">
-            Feature Comparison
-          </h3>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="text-left py-4 px-4 text-gray-400">Feature</th>
-                  <th className="text-center py-4 px-4 text-gray-400">Starter</th>
-                  <th className="text-center py-4 px-4 text-gray-400">Pro</th>
-                  <th className="text-center py-4 px-4 text-gray-400">Agency</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-800">
-                  <td className="py-4 px-4 text-white">App Generations</td>
-                  <td className="text-center py-4 px-4 text-gray-300">5</td>
-                  <td className="text-center py-4 px-4 text-gray-300">15</td>
-                  <td className="text-center py-4 px-4 text-gray-300">50</td>
-                </tr>
-                <tr className="border-b border-gray-800">
-                  <td className="py-4 px-4 text-white">Templates</td>
-                  <td className="text-center py-4 px-4 text-gray-300">Basic</td>
-                  <td className="text-center py-4 px-4 text-gray-300">All</td>
-                  <td className="text-center py-4 px-4 text-gray-300">Unlimited</td>
-                </tr>
-                <tr className="border-b border-gray-800">
-                  <td className="py-4 px-4 text-white">Support</td>
-                  <td className="text-center py-4 px-4 text-gray-300">Community</td>
-                  <td className="text-center py-4 px-4 text-gray-300">Priority</td>
-                  <td className="text-center py-4 px-4 text-gray-300">Dedicated</td>
-                </tr>
-                <tr className="border-b border-gray-800">
-                  <td className="py-4 px-4 text-white">Team Features</td>
-                  <td className="text-center py-4 px-4 text-gray-300">-</td>
-                  <td className="text-center py-4 px-4 text-gray-300">✓</td>
-                  <td className="text-center py-4 px-4 text-gray-300">✓</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
-
-        {/* Stats Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="bg-gray-900 rounded-2xl p-8 border border-gray-700 mb-16"
-        >
-          <h3 className="text-2xl font-bold text-blue-400 mb-8 text-center">
+        {/* Benefits Section */}
+        <div className="mb-16">
+          <h2 className="m3-headline-medium font-bold text-foreground text-center mb-12">
             Why Choose FragmentsPro?
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-400 mb-2">4,000</div>
-              <p className="text-gray-400">Tokens per Generation</p>
-              <p className="text-sm text-gray-500 mt-2">
-                Optimized for comprehensive app creation
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-400 mb-2">5+</div>
-              <p className="text-gray-400">Framework Templates</p>
-              <p className="text-sm text-gray-500 mt-2">
-                Next.js, Vue, Streamlit, Python & more
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-400 mb-2">60%</div>
-              <p className="text-gray-400">Cost Savings vs Competitors</p>
-              <p className="text-sm text-gray-500 mt-2">
-                Premium features at startup-friendly pricing
-              </p>
-            </div>
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {benefits.map((benefit, index) => (
+              <motion.div
+                key={benefit.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <M3Card variant="filled" className="h-full text-center">
+                  <M3CardContent className="p-6">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      {benefit.icon}
+                    </div>
+                    <h3 className="m3-title-medium font-semibold text-foreground mb-2">
+                      {benefit.title}
+                    </h3>
+                    <p className="m3-body-small text-muted-foreground">
+                      {benefit.description}
+                    </p>
+                  </M3CardContent>
+                </M3Card>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
-
-        {/* Back to App */}
-        <div className="text-center mt-8">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => window.location.href = '/'}
-            className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition-colors"
-          >
-            Back to App Builder
-          </motion.button>
         </div>
+
+        {/* Comparison Section */}
+        <div className="mb-16">
+          <h2 className="m3-headline-medium font-bold text-foreground text-center mb-8">
+            Compare with Competitors
+          </h2>
+          <M3Card variant="elevated">
+            <M3CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <h3 className="m3-title-large font-semibold text-foreground mb-2">FragmentsPro</h3>
+                  <div className="text-2xl font-bold text-primary mb-2">$9</div>
+                  <p className="m3-body-small text-muted-foreground mb-4">5 generations</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-center gap-2">
+                      <Check className="w-4 h-4 text-success" />
+                      <span>4,000 tokens per generation</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <Check className="w-4 h-4 text-success" />
+                      <span>All templates included</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <Check className="w-4 h-4 text-success" />
+                      <span>Real deployment</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <h3 className="m3-title-large font-semibold text-foreground mb-2">Manus</h3>
+                  <div className="text-2xl font-bold text-muted-foreground mb-2">$15</div>
+                  <p className="m3-body-small text-muted-foreground mb-4">5 generations</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-center gap-2">
+                      <Check className="w-4 h-4 text-success" />
+                      <span>Limited tokens</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <Check className="w-4 h-4 text-success" />
+                      <span>Basic templates</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 text-muted-foreground">✕</div>
+                      <span>Preview only</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <h3 className="m3-title-large font-semibold text-foreground mb-2">Lovable</h3>
+                  <div className="text-2xl font-bold text-muted-foreground mb-2">$20</div>
+                  <p className="m3-body-small text-muted-foreground mb-4">5 generations</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-center gap-2">
+                      <Check className="w-4 h-4 text-success" />
+                      <span>Standard tokens</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <Check className="w-4 h-4 text-success" />
+                      <span>Good templates</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 text-muted-foreground">✕</div>
+                      <span>No deployment</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </M3CardContent>
+          </M3Card>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="mb-16">
+          <h2 className="m3-headline-medium font-bold text-foreground text-center mb-8">
+            Frequently Asked Questions
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <M3Card variant="filled">
+              <M3CardContent className="p-6">
+                <h3 className="m3-title-medium font-semibold text-foreground mb-2">
+                  How many tokens do I get per generation?
+                </h3>
+                <p className="m3-body-small text-muted-foreground">
+                  Each generation uses 4,000 tokens, which is optimized for comprehensive app creation with detailed features and functionality.
+                </p>
+              </M3CardContent>
+            </M3Card>
+
+            <M3Card variant="filled">
+              <M3CardContent className="p-6">
+                <h3 className="m3-title-medium font-semibold text-foreground mb-2">
+                  Can I deploy my generated apps?
+                </h3>
+                <p className="m3-body-small text-muted-foreground">
+                  Yes! All plans include E2B deployment capabilities, allowing you to deploy your apps to production environments instantly.
+                </p>
+              </M3CardContent>
+            </M3Card>
+
+            <M3Card variant="filled">
+              <M3CardContent className="p-6">
+                <h3 className="m3-title-medium font-semibold text-foreground mb-2">
+                  What templates are available?
+                </h3>
+                <p className="m3-body-small text-muted-foreground">
+                  We support Next.js, Vue.js, Streamlit, Gradio, and more. All templates are included with every plan.
+                </p>
+              </M3CardContent>
+            </M3Card>
+
+            <M3Card variant="filled">
+              <M3CardContent className="p-6">
+                <h3 className="m3-title-medium font-semibold text-foreground mb-2">
+                  Is there a free trial?
+                </h3>
+                <p className="m3-body-small text-muted-foreground">
+                  Yes! Start with our free tier to experience the platform, then upgrade when you're ready to build more.
+                </p>
+              </M3CardContent>
+            </M3Card>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="text-center"
+        >
+          <M3Card variant="elevated" className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
+            <M3CardContent className="p-8">
+              <h2 className="m3-headline-medium font-bold text-foreground mb-4">
+                Ready to Start Building? 🚀
+              </h2>
+              <p className="m3-body-large text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Join thousands of developers creating amazing applications with AI.
+                Choose your plan and start building today!
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <M3Button
+                  variant="filled"
+                  size="lg"
+                  onClick={() => handlePurchase(pricingTiers[0])}
+                  className="group"
+                >
+                  <Rocket className="w-4 h-4 mr-2" />
+                  Start with Starter Pack
+                  <Sparkles className="w-4 h-4 ml-2 group-hover:rotate-12 transition-transform" />
+                </M3Button>
+
+                <M3Button
+                  variant="outlined"
+                  size="lg"
+                  onClick={() => window.location.href = '/build'}
+                >
+                  <Gift className="w-4 h-4 mr-2" />
+                  Try for Free
+                </M3Button>
+              </div>
+            </M3CardContent>
+          </M3Card>
+        </motion.div>
       </div>
     </div>
   )

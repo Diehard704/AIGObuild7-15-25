@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { M3Button } from '@/components/ui/m3-button'
+import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
 import {
   BarChart3,
   TrendingUp,
@@ -21,7 +23,10 @@ import {
   Code,
   Globe,
   Rocket,
-  Sparkles
+  Sparkles,
+  Plus,
+  Filter,
+  Search
 } from 'lucide-react'
 
 interface UserStats {
@@ -116,11 +121,11 @@ export default function DashboardPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'deployed': return 'text-green-400 bg-green-500/20'
-      case 'ready': return 'text-blue-400 bg-blue-500/20'
-      case 'generating': return 'text-yellow-400 bg-yellow-500/20'
-      case 'failed': return 'text-red-400 bg-red-500/20'
-      default: return 'text-gray-400 bg-gray-500/20'
+      case 'deployed': return 'text-success bg-success/20'
+      case 'ready': return 'text-primary bg-primary/20'
+      case 'generating': return 'text-warning bg-warning/20'
+      case 'failed': return 'text-error bg-error/20'
+      default: return 'text-muted-foreground bg-muted'
     }
   }
 
@@ -135,80 +140,54 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 animated-gradient opacity-5" />
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div
-          className="absolute top-20 left-20 w-1 h-1 bg-blue-400 rounded-full"
-          animate={{ y: [0, -20, 0], opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-40 right-32 w-1.5 h-1.5 bg-purple-400 rounded-full"
-          animate={{ y: [0, -15, 0], opacity: [0.3, 1, 0.3] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        />
-        <motion.div
-          className="absolute bottom-32 left-1/4 w-1 h-1 bg-pink-400 rounded-full"
-          animate={{ y: [0, -25, 0], opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-      </div>
-
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <motion.div
-        initial={{ y: -50, opacity: 0 }}
+        initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="border-b border-gray-800/50 p-6 relative z-10"
+        className="border-b border-border/50 p-6"
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
               <motion.h1
-                className="text-3xl font-bold gradient-text mb-2"
+                className="m3-headline-large font-bold text-foreground mb-2"
                 whileHover={{ scale: 1.02 }}
               >
                 Strategic Development Dashboard
               </motion.h1>
-              <p className="text-gray-400 mt-1 flex items-center gap-2">
+              <p className="m3-body-large text-muted-foreground flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
                 Comprehensive backend infrastructure management and analytics
               </p>
             </div>
 
             <div className="flex items-center gap-4">
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+              <M3Button
+                variant="filled"
+                size="lg"
                 onClick={() => window.location.href = '/build'}
-                className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl font-medium transition-all duration-300 hover-lift relative overflow-hidden"
+                className="group"
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  <Rocket className="w-4 h-4" />
-                  Generate New App
-                </span>
-                <div className="absolute inset-0 shimmer" />
-              </motion.button>
+                <Rocket className="w-4 h-4 mr-2" />
+                Generate New App
+              </M3Button>
 
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+              <M3Button
+                variant="outlined"
+                size="lg"
                 onClick={() => window.location.href = '/pricing'}
-                className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-xl font-medium transition-all duration-300 hover-lift"
               >
                 Buy Credits
-              </motion.button>
+              </M3Button>
             </div>
           </div>
         </div>
       </motion.div>
 
       {/* Navigation Tabs */}
-      <div className="border-b border-gray-800">
+      <div className="border-b border-border/50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex space-x-8">
             {[
@@ -222,8 +201,8 @@ export default function DashboardPage() {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedView(tab.id as any)}
                 className={`flex items-center gap-2 py-4 px-2 border-b-2 font-medium transition-colors ${selectedView === tab.id
-                  ? 'border-blue-500 text-blue-400'
-                  : 'border-transparent text-gray-400 hover:text-white'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                   }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -245,90 +224,104 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-blue-500/30 transition-colors"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm text-gray-400">Remaining Credits</h3>
-                  <Zap className="w-5 h-5 text-yellow-400" />
-                </div>
-                <div className="text-3xl font-bold text-green-400 mb-2">
-                  {userStats.remainingCredits}
-                </div>
-                <p className="text-sm text-gray-500">
-                  of {userStats.totalCredits} total
-                </p>
-                <div className="mt-3 w-full bg-gray-700 rounded-full h-2">
-                  <div
-                    className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${(userStats.remainingCredits / userStats.totalCredits) * 100}%` }}
-                  />
-                </div>
+                <M3Card variant="elevated" className="h-full">
+                  <M3CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="m3-title-medium text-muted-foreground">Remaining Credits</h3>
+                      <Zap className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="m3-headline-large font-bold text-primary mb-2">
+                      {userStats.remainingCredits}
+                    </div>
+                    <p className="m3-body-small text-muted-foreground mb-3">
+                      of {userStats.totalCredits} total
+                    </p>
+                    <div className="w-full bg-surface-container rounded-full h-2">
+                      <motion.div
+                        className="bg-primary h-2 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(userStats.remainingCredits / userStats.totalCredits) * 100}%` }}
+                        transition={{ delay: 0.5, duration: 1 }}
+                      />
+                    </div>
+                  </M3CardContent>
+                </M3Card>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-blue-500/30 transition-colors"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm text-gray-400">Apps Generated</h3>
-                  <FolderOpen className="w-5 h-5 text-blue-400" />
-                </div>
-                <div className="text-3xl font-bold text-blue-400 mb-2">
-                  {userStats.totalAppsGenerated}
-                </div>
-                <p className="text-sm text-gray-500">
-                  Total applications
-                </p>
-                <div className="mt-3 flex items-center text-sm text-green-400">
-                  <TrendingUp className="w-4 h-4 mr-1" />
-                  +12% this month
-                </div>
+                <M3Card variant="elevated" className="h-full">
+                  <M3CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="m3-title-medium text-muted-foreground">Apps Generated</h3>
+                      <FolderOpen className="w-5 h-5 text-secondary" />
+                    </div>
+                    <div className="m3-headline-large font-bold text-secondary mb-2">
+                      {userStats.totalAppsGenerated}
+                    </div>
+                    <p className="m3-body-small text-muted-foreground mb-3">
+                      Total applications
+                    </p>
+                    <div className="flex items-center text-sm text-success">
+                      <TrendingUp className="w-4 h-4 mr-1" />
+                      +12% this month
+                    </div>
+                  </M3CardContent>
+                </M3Card>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-blue-500/30 transition-colors"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm text-gray-400">Success Rate</h3>
-                  <Target className="w-5 h-5 text-purple-400" />
-                </div>
-                <div className="text-3xl font-bold text-purple-400 mb-2">
-                  {userStats.successRate}%
-                </div>
-                <p className="text-sm text-gray-500">
-                  Successful generations
-                </p>
-                <div className="mt-3 flex items-center text-sm text-green-400">
-                  <TrendingUp className="w-4 h-4 mr-1" />
-                  +5% improvement
-                </div>
+                <M3Card variant="elevated" className="h-full">
+                  <M3CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="m3-title-medium text-muted-foreground">Success Rate</h3>
+                      <Target className="w-5 h-5 text-tertiary" />
+                    </div>
+                    <div className="m3-headline-large font-bold text-tertiary mb-2">
+                      {userStats.successRate}%
+                    </div>
+                    <p className="m3-body-small text-muted-foreground mb-3">
+                      Successful generations
+                    </p>
+                    <div className="flex items-center text-sm text-success">
+                      <TrendingUp className="w-4 h-4 mr-1" />
+                      +5% improvement
+                    </div>
+                  </M3CardContent>
+                </M3Card>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-blue-500/30 transition-colors"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm text-gray-400">Avg Generation</h3>
-                  <Clock className="w-5 h-5 text-yellow-400" />
-                </div>
-                <div className="text-3xl font-bold text-yellow-400 mb-2">
-                  {userStats.averageGenerationTime}s
-                </div>
-                <p className="text-sm text-gray-500">
-                  Time per app
-                </p>
-                <div className="mt-3 flex items-center text-sm text-green-400">
-                  <TrendingUp className="w-4 h-4 mr-1" />
-                  -3s faster
-                </div>
+                <M3Card variant="elevated" className="h-full">
+                  <M3CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="m3-title-medium text-muted-foreground">Avg Generation</h3>
+                      <Clock className="w-5 h-5 text-warning" />
+                    </div>
+                    <div className="m3-headline-large font-bold text-warning mb-2">
+                      {userStats.averageGenerationTime}s
+                    </div>
+                    <p className="m3-body-small text-muted-foreground mb-3">
+                      Time per app
+                    </p>
+                    <div className="flex items-center text-sm text-success">
+                      <TrendingUp className="w-4 h-4 mr-1" />
+                      -3s faster
+                    </div>
+                  </M3CardContent>
+                </M3Card>
               </motion.div>
             </div>
 
@@ -337,44 +330,45 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-gray-900 rounded-xl border border-gray-700 p-6 mb-8"
+              className="mb-8"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-blue-400">
-                  Monthly Usage Trends
-                </h3>
-                <div className="flex space-x-2">
-                  {(['7d', '30d', '90d'] as const).map((timeframe) => (
-                    <button
-                      key={timeframe}
-                      onClick={() => setSelectedTimeframe(timeframe)}
-                      className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${selectedTimeframe === timeframe
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                        }`}
-                    >
-                      {timeframe}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="h-64 flex items-end justify-between space-x-2">
-                {userStats.monthlyUsage.slice(-12).map((value, index) => (
-                  <div key={index} className="flex-1 flex flex-col items-center">
-                    <div className="w-full bg-gray-700 rounded-t-sm relative group">
-                      <motion.div
-                        className="bg-gradient-to-t from-blue-500 to-purple-500 rounded-t-sm"
-                        initial={{ height: 0 }}
-                        animate={{ height: `${(value / Math.max(...userStats.monthlyUsage)) * 100}%` }}
-                        transition={{ delay: index * 0.1, duration: 0.5 }}
-                      />
-                      <div className="absolute inset-0 bg-blue-400/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <M3Card variant="elevated">
+                <M3CardHeader>
+                  <div className="flex items-center justify-between">
+                    <M3CardTitle>Monthly Usage Trends</M3CardTitle>
+                    <div className="flex space-x-2">
+                      {(['7d', '30d', '90d'] as const).map((timeframe) => (
+                        <M3Button
+                          key={timeframe}
+                          variant={selectedTimeframe === timeframe ? 'filled' : 'outlined'}
+                          size="sm"
+                          onClick={() => setSelectedTimeframe(timeframe)}
+                        >
+                          {timeframe}
+                        </M3Button>
+                      ))}
                     </div>
-                    <span className="text-xs text-gray-400 mt-2">{value}</span>
                   </div>
-                ))}
-              </div>
+                </M3CardHeader>
+                <M3CardContent>
+                  <div className="h-64 flex items-end justify-between space-x-2">
+                    {userStats.monthlyUsage.slice(-12).map((value, index) => (
+                      <div key={index} className="flex-1 flex flex-col items-center">
+                        <div className="w-full bg-surface-container rounded-t-sm relative group">
+                          <motion.div
+                            className="bg-gradient-to-t from-primary to-secondary rounded-t-sm"
+                            initial={{ height: 0 }}
+                            animate={{ height: `${(value / Math.max(...userStats.monthlyUsage)) * 100}%` }}
+                            transition={{ delay: index * 0.1, duration: 0.5 }}
+                          />
+                          <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                        <span className="m3-body-small text-muted-foreground mt-2">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </M3CardContent>
+              </M3Card>
             </motion.div>
 
             {/* Popular Templates */}
@@ -382,29 +376,35 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-gray-900 rounded-xl border border-gray-700 p-6 mb-8"
             >
-              <h3 className="text-xl font-semibold text-blue-400 mb-6">
-                Popular Templates
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {userStats.popularTemplates.map((template, index) => (
-                  <motion.div
-                    key={template.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.7 + index * 0.1 }}
-                    className="bg-gray-800 rounded-lg p-4 border border-gray-600 hover:border-blue-500/30 transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-white">{template.name}</h4>
-                      <Code className="w-4 h-4 text-blue-400" />
-                    </div>
-                    <p className="text-2xl font-bold text-blue-400">{template.count}</p>
-                    <p className="text-sm text-gray-400">generations</p>
-                  </motion.div>
-                ))}
-              </div>
+              <M3Card variant="elevated">
+                <M3CardHeader>
+                  <M3CardTitle>Popular Templates</M3CardTitle>
+                </M3CardHeader>
+                <M3CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {userStats.popularTemplates.map((template, index) => (
+                      <motion.div
+                        key={template.name}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.7 + index * 0.1 }}
+                      >
+                        <M3Card variant="filled" className="h-full">
+                          <M3CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="m3-title-medium font-semibold text-foreground">{template.name}</h4>
+                              <Code className="w-4 h-4 text-primary" />
+                            </div>
+                            <p className="m3-headline-small font-bold text-primary">{template.count}</p>
+                            <p className="m3-body-small text-muted-foreground">generations</p>
+                          </M3CardContent>
+                        </M3Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </M3CardContent>
+              </M3Card>
             </motion.div>
           </>
         )}
@@ -414,150 +414,129 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-gray-900 rounded-xl border border-gray-700 overflow-hidden"
           >
-            <div className="p-6 border-b border-gray-700">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold text-blue-400">
-                    Project Management
-                  </h3>
-                  <p className="text-gray-400 mt-1">
-                    Comprehensive application development tracking and management
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <select
-                    className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm"
-                    aria-label="Filter by status"
-                  >
-                    <option>All Status</option>
-                    <option>Ready</option>
-                    <option>Deployed</option>
-                    <option>Generating</option>
-                  </select>
-                  <select
-                    className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm"
-                    aria-label="Filter by template"
-                  >
-                    <option>All Templates</option>
-                    <option>Next.js</option>
-                    <option>React</option>
-                    <option>Vue.js</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className="divide-y divide-gray-700">
-              {recentApps.map((app, index) => (
-                <motion.div
-                  key={app.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
-                  className="p-6 hover:bg-gray-800/50 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h4 className="text-lg font-semibold text-white">
-                          {app.title}
-                        </h4>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(app.status)}`}>
-                          {getStatusIcon(app.status)}
-                          {app.status}
-                        </span>
-                      </div>
-
-                      <p className="text-gray-400 mb-3">
-                        {app.prompt}
-                      </p>
-
-                      <div className="flex items-center gap-6 text-sm text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Code className="w-4 h-4" />
-                          {app.template}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          {new Date(app.createdAt).toLocaleDateString()}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Zap className="w-4 h-4" />
-                          {app.tokensUsed.toLocaleString()} tokens
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {app.generationTime}s
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="w-4 h-4" />
-                          {app.views} views
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Star className="w-4 h-4" />
-                          {app.likes} likes
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      {app.previewUrl && (
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => window.open(app.previewUrl, '_blank')}
-                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          Preview
-                        </motion.button>
-                      )}
-
-                      {app.deploymentUrl && (
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => window.open(app.deploymentUrl, '_blank')}
-                          className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                        >
-                          <Globe className="w-4 h-4" />
-                          Live App
-                        </motion.button>
-                      )}
-
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                      >
-                        <Edit3 className="w-4 h-4" />
-                        Edit
-                      </motion.button>
-
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                      >
-                        <Share2 className="w-4 h-4" />
-                        Share
-                      </motion.button>
-
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                      >
-                        <Download className="w-4 h-4" />
-                        Export
-                      </motion.button>
-                    </div>
+            <M3Card variant="elevated">
+              <M3CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <M3CardTitle>Project Management</M3CardTitle>
+                    <p className="m3-body-medium text-muted-foreground mt-1">
+                      Comprehensive application development tracking and management
+                    </p>
                   </div>
-                </motion.div>
-              ))}
-            </div>
+                  <div className="flex items-center gap-3">
+                    <M3Button variant="outlined" size="sm">
+                      <Filter className="w-4 h-4 mr-2" />
+                      Filter
+                    </M3Button>
+                    <M3Button variant="filled" size="sm">
+                      <Plus className="w-4 h-4 mr-2" />
+                      New Project
+                    </M3Button>
+                  </div>
+                </div>
+              </M3CardHeader>
+              <M3CardContent>
+                <div className="space-y-4">
+                  {recentApps.map((app, index) => (
+                    <motion.div
+                      key={app.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                    >
+                      <M3Card variant="filled" className="hover:shadow-lg transition-shadow">
+                        <M3CardContent className="p-6">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <h4 className="m3-title-large font-semibold text-foreground">
+                                  {app.title}
+                                </h4>
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(app.status)}`}>
+                                  {getStatusIcon(app.status)}
+                                  {app.status}
+                                </span>
+                              </div>
+
+                              <p className="m3-body-medium text-muted-foreground mb-3">
+                                {app.prompt}
+                              </p>
+
+                              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Code className="w-4 h-4" />
+                                  {app.template}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-4 h-4" />
+                                  {new Date(app.createdAt).toLocaleDateString()}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Zap className="w-4 h-4" />
+                                  {app.tokensUsed.toLocaleString()} tokens
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-4 h-4" />
+                                  {app.generationTime}s
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Eye className="w-4 h-4" />
+                                  {app.views} views
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Star className="w-4 h-4" />
+                                  {app.likes} likes
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              {app.previewUrl && (
+                                <M3Button
+                                  variant="outlined"
+                                  size="sm"
+                                  onClick={() => window.open(app.previewUrl, '_blank')}
+                                >
+                                  <Eye className="w-4 h-4 mr-2" />
+                                  Preview
+                                </M3Button>
+                              )}
+
+                              {app.deploymentUrl && (
+                                <M3Button
+                                  variant="filled"
+                                  size="sm"
+                                  onClick={() => window.open(app.deploymentUrl, '_blank')}
+                                >
+                                  <Globe className="w-4 h-4 mr-2" />
+                                  Live App
+                                </M3Button>
+                              )}
+
+                              <M3Button variant="outlined" size="sm">
+                                <Edit3 className="w-4 h-4 mr-2" />
+                                Edit
+                              </M3Button>
+
+                              <M3Button variant="outlined" size="sm">
+                                <Share2 className="w-4 h-4 mr-2" />
+                                Share
+                              </M3Button>
+
+                              <M3Button variant="outlined" size="sm">
+                                <Download className="w-4 h-4 mr-2" />
+                                Export
+                              </M3Button>
+                            </div>
+                          </div>
+                        </M3CardContent>
+                      </M3Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </M3CardContent>
+            </M3Card>
           </motion.div>
         )}
 
@@ -569,96 +548,102 @@ export default function DashboardPage() {
             className="space-y-8"
           >
             {/* Performance Metrics */}
-            <div className="bg-gray-900 rounded-xl border border-gray-700 p-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-6">
-                Performance Analytics
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-green-400 mb-2">95%</div>
-                  <p className="text-gray-400">Success Rate</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Successful app generations
-                  </p>
+            <M3Card variant="elevated">
+              <M3CardHeader>
+                <M3CardTitle>Performance Analytics</M3CardTitle>
+              </M3CardHeader>
+              <M3CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="m3-display-small font-bold text-success mb-2">95%</div>
+                    <p className="m3-body-medium text-muted-foreground">Success Rate</p>
+                    <p className="m3-body-small text-muted-foreground mt-2">
+                      Successful app generations
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="m3-display-small font-bold text-primary mb-2">28s</div>
+                    <p className="m3-body-medium text-muted-foreground">Average Time</p>
+                    <p className="m3-body-small text-muted-foreground mt-2">
+                      Per app generation
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="m3-display-small font-bold text-secondary mb-2">4.2k</div>
+                    <p className="m3-body-medium text-muted-foreground">Avg Tokens</p>
+                    <p className="m3-body-small text-muted-foreground mt-2">
+                      Per generation
+                    </p>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-blue-400 mb-2">28s</div>
-                  <p className="text-gray-400">Average Time</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Per app generation
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-purple-400 mb-2">4.2k</div>
-                  <p className="text-gray-400">Avg Tokens</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Per generation
-                  </p>
-                </div>
-              </div>
-            </div>
+              </M3CardContent>
+            </M3Card>
 
             {/* Usage Breakdown */}
-            <div className="bg-gray-900 rounded-xl border border-gray-700 p-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-6">
-                Usage Breakdown
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-4">Template Usage</h4>
-                  <div className="space-y-3">
-                    {userStats.popularTemplates.map((template, index) => (
-                      <div key={template.name} className="flex items-center justify-between">
-                        <span className="text-gray-300">{template.name}</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 bg-gray-700 rounded-full h-2">
-                            <div
-                              className="bg-blue-500 h-2 rounded-full"
-                              style={{ width: `${(template.count / Math.max(...userStats.popularTemplates.map(t => t.count))) * 100}%` }}
-                            />
+            <M3Card variant="elevated">
+              <M3CardHeader>
+                <M3CardTitle>Usage Breakdown</M3CardTitle>
+              </M3CardHeader>
+              <M3CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="m3-title-large font-semibold text-foreground mb-4">Template Usage</h4>
+                    <div className="space-y-3">
+                      {userStats.popularTemplates.map((template, index) => (
+                        <div key={template.name} className="flex items-center justify-between">
+                          <span className="m3-body-medium text-foreground">{template.name}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 bg-surface-container rounded-full h-2">
+                              <div
+                                className="bg-primary h-2 rounded-full"
+                                style={{ width: `${(template.count / Math.max(...userStats.popularTemplates.map(t => t.count))) * 100}%` }}
+                              />
+                            </div>
+                            <span className="m3-body-small text-muted-foreground w-8 text-right">{template.count}</span>
                           </div>
-                          <span className="text-sm text-gray-400 w-8 text-right">{template.count}</span>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="m3-title-large font-semibold text-foreground mb-4">Monthly Trends</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="m3-body-medium text-foreground">Apps Generated</span>
+                        <span className="text-success font-semibold">+15%</span>
                       </div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-4">Monthly Trends</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-300">Apps Generated</span>
-                      <span className="text-green-400 font-semibold">+15%</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-300">Token Usage</span>
-                      <span className="text-blue-400 font-semibold">+8%</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-300">Success Rate</span>
-                      <span className="text-purple-400 font-semibold">+3%</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-300">Generation Time</span>
-                      <span className="text-yellow-400 font-semibold">-12%</span>
+                      <div className="flex items-center justify-between">
+                        <span className="m3-body-medium text-foreground">Token Usage</span>
+                        <span className="text-primary font-semibold">+8%</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="m3-body-medium text-foreground">Success Rate</span>
+                        <span className="text-secondary font-semibold">+3%</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="m3-body-medium text-foreground">Generation Time</span>
+                        <span className="text-warning font-semibold">-12%</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </M3CardContent>
+            </M3Card>
           </motion.div>
         )}
 
         {/* Quick Actions */}
         <div className="mt-8 text-center">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <M3Button
+            size="lg"
+            variant="filled"
             onClick={() => window.location.href = '/build'}
-            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl font-semibold text-lg transition-all"
+            className="group"
           >
-            Start New Development Project 🚀
-          </motion.button>
+            <Rocket className="w-4 h-4 mr-2" />
+            Start New Development Project
+            <Sparkles className="w-4 h-4 ml-2 group-hover:rotate-12 transition-transform" />
+          </M3Button>
         </div>
       </div>
     </div>
