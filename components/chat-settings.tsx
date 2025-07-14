@@ -1,4 +1,4 @@
-import { Button } from './ui/button'
+import { M3Button } from './ui/m3-button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,19 +35,19 @@ export function ChatSettings({
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-muted-foreground h-6 w-6 rounded-sm">
+                <M3Button variant="tonal" size="icon" className="text-muted-foreground h-6 w-6 rounded-xl">
                   <Settings2 className="h-4 w-4" />
-                </Button>
+                </M3Button>
               </DropdownMenuTrigger>
             </TooltipTrigger>
             <TooltipContent>LLM settings</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" className="bg-surface-container border border-outline rounded-2xl">
           {apiKeyConfigurable && (
             <>
               <div className="flex flex-col gap-2 px-2 py-2">
-                <Label htmlFor="apiKey">API Key</Label>
+                <Label htmlFor="apiKey" className="m3-label-medium text-foreground">API Key</Label>
                 <Input
                   name="apiKey"
                   type="password"
@@ -60,7 +60,7 @@ export function ChatSettings({
                         e.target.value.length > 0 ? e.target.value : undefined,
                     })
                   }
-                  className="text-sm"
+                  className="m3-body-medium bg-surface-container border border-outline rounded-xl"
                 />
               </div>
               <DropdownMenuSeparator />
@@ -69,7 +69,7 @@ export function ChatSettings({
           {baseURLConfigurable && (
             <>
               <div className="flex flex-col gap-2 px-2 py-2">
-                <Label htmlFor="baseURL">Base URL</Label>
+                <Label htmlFor="baseURL" className="m3-label-medium text-foreground">Base URL</Label>
                 <Input
                   name="baseURL"
                   type="text"
@@ -82,16 +82,16 @@ export function ChatSettings({
                         e.target.value.length > 0 ? e.target.value : undefined,
                     })
                   }
-                  className="text-sm"
+                  className="m3-body-medium bg-surface-container border border-outline rounded-xl"
                 />
               </div>
               <DropdownMenuSeparator />
             </>
           )}
           <div className="flex flex-col gap-1.5 px-2 py-2">
-            <span className="text-sm font-medium">Parameters</span>
+            <span className="m3-label-medium font-medium text-foreground">Parameters</span>
             <div className="flex space-x-4 items-center">
-              <span className="text-sm flex-1 text-muted-foreground">
+              <span className="m3-body-small flex-1 text-muted-foreground">
                 Output tokens
               </span>
               <Input
@@ -100,7 +100,7 @@ export function ChatSettings({
                 min={50}
                 max={10000}
                 step={1}
-                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                className="h-6 rounded-xl w-[84px] text-xs text-center tabular-nums bg-surface-container border border-outline"
                 placeholder="Auto"
                 onChange={(e) =>
                   onLanguageModelChange({
@@ -110,7 +110,7 @@ export function ChatSettings({
               />
             </div>
             <div className="flex space-x-4 items-center">
-              <span className="text-sm flex-1 text-muted-foreground">
+              <span className="m3-body-small flex-1 text-muted-foreground">
                 Temperature
               </span>
               <Input
@@ -119,7 +119,7 @@ export function ChatSettings({
                 min={0}
                 max={5}
                 step={0.01}
-                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                className="h-6 rounded-xl w-[84px] text-xs text-center tabular-nums bg-surface-container border border-outline"
                 placeholder="Auto"
                 onChange={(e) =>
                   onLanguageModelChange({
@@ -129,14 +129,14 @@ export function ChatSettings({
               />
             </div>
             <div className="flex space-x-4 items-center">
-              <span className="text-sm flex-1 text-muted-foreground">Top P</span>
+              <span className="m3-body-small flex-1 text-muted-foreground">Top P</span>
               <Input
                 type="number"
                 defaultValue={languageModel.topP}
                 min={0}
                 max={1}
                 step={0.01}
-                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                className="h-6 rounded-xl w-[84px] text-xs text-center tabular-nums bg-surface-container border border-outline"
                 placeholder="Auto"
                 onChange={(e) =>
                   onLanguageModelChange({
@@ -146,14 +146,14 @@ export function ChatSettings({
               />
             </div>
             <div className="flex space-x-4 items-center">
-              <span className="text-sm flex-1 text-muted-foreground">Top K</span>
+              <span className="m3-body-small flex-1 text-muted-foreground">Top K</span>
               <Input
                 type="number"
                 defaultValue={languageModel.topK}
                 min={0}
                 max={500}
                 step={1}
-                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                className="h-6 rounded-xl w-[84px] text-xs text-center tabular-nums bg-surface-container border border-outline"
                 placeholder="Auto"
                 onChange={(e) =>
                   onLanguageModelChange({
@@ -163,7 +163,7 @@ export function ChatSettings({
               />
             </div>
             <div className="flex space-x-4 items-center">
-              <span className="text-sm flex-1 text-muted-foreground">
+              <span className="m3-body-small flex-1 text-muted-foreground">
                 Frequence penalty
               </span>
               <Input
@@ -172,7 +172,7 @@ export function ChatSettings({
                 min={0}
                 max={2}
                 step={0.01}
-                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                className="h-6 rounded-xl w-[84px] text-xs text-center tabular-nums bg-surface-container border border-outline"
                 placeholder="Auto"
                 onChange={(e) =>
                   onLanguageModelChange({
@@ -182,7 +182,7 @@ export function ChatSettings({
               />
             </div>
             <div className="flex space-x-4 items-center">
-              <span className="text-sm flex-1 text-muted-foreground">
+              <span className="m3-body-small flex-1 text-muted-foreground">
                 Presence penalty
               </span>
               <Input
@@ -191,7 +191,7 @@ export function ChatSettings({
                 min={0}
                 max={2}
                 step={0.01}
-                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                className="h-6 rounded-xl w-[84px] text-xs text-center tabular-nums bg-surface-container border border-outline"
                 placeholder="Auto"
                 onChange={(e) =>
                   onLanguageModelChange({

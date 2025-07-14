@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, ArrowRight, Check, Play, Code, Rocket, Users } from 'lucide-react'
+import { M3Button } from '@/components/ui/m3-button'
+import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
 
 interface OnboardingStep {
     id: string
@@ -93,191 +95,193 @@ export function OnboardingFlow() {
     }
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-gray-900 rounded-2xl border border-gray-700 max-w-2xl w-full p-8"
+        <div className="fixed inset-0 bg-surface/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <M3Card
+                variant="elevated"
+                className="max-w-2xl w-full"
             >
-                {/* Progress Bar */}
-                <div className="mb-8">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-2xl font-bold text-white">Getting Started</h2>
-                        <span className="text-gray-400 text-sm">
-                            {currentStep + 1} of {steps.length}
-                        </span>
+                <M3CardContent className="p-8">
+                    {/* Progress Bar */}
+                    <div className="mb-8">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="m3-headline-medium font-bold text-foreground">Getting Started</h2>
+                            <span className="m3-body-small text-muted-foreground">
+                                {currentStep + 1} of {steps.length}
+                            </span>
+                        </div>
+                        <div className="w-full bg-surface-container rounded-full h-2">
+                            <motion.div
+                                className="h-2 bg-gradient-to-r from-primary to-secondary rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+                                transition={{ duration: 0.5 }}
+                            />
+                        </div>
                     </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
+
+                    {/* Step Content */}
+                    <AnimatePresence mode="wait">
                         <motion.div
-                            className="h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-                            transition={{ duration: 0.5 }}
-                        />
-                    </div>
-                </div>
-
-                {/* Step Content */}
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={currentStep}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="min-h-64"
-                    >
-                        {currentStep === 0 && (
-                            <div className="text-center">
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6"
-                                >
-                                    <Sparkles className="w-8 h-8 text-white" />
-                                </motion.div>
-                                <h3 className="text-xl font-semibold text-white mb-4">
-                                    Welcome to FragmentsPro!
-                                </h3>
-                                <p className="text-gray-400 mb-8">
-                                    Build amazing applications with AI in minutes. Let's personalize your experience.
-                                </p>
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={handleNext}
-                                    className="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors flex items-center gap-2 mx-auto"
-                                >
-                                    Get Started
-                                    <ArrowRight className="w-4 h-4" />
-                                </motion.button>
-                            </div>
-                        )}
-
-                        {currentStep === 1 && (
-                            <div>
-                                <h3 className="text-xl font-semibold text-white mb-6">
-                                    What's your experience level?
-                                </h3>
-                                <div className="space-y-4">
-                                    {[
-                                        { level: 'beginner' as const, title: 'Beginner', desc: 'New to coding, want to learn' },
-                                        { level: 'intermediate' as const, title: 'Intermediate', desc: 'Some coding experience' },
-                                        { level: 'advanced' as const, title: 'Advanced', desc: 'Experienced developer' }
-                                    ].map((option) => (
-                                        <motion.button
-                                            key={option.level}
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            onClick={() => handleExperienceSelect(option.level)}
-                                            className="w-full p-4 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-600 hover:border-blue-500 transition-all text-left"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <h4 className="text-white font-medium">{option.title}</h4>
-                                                    <p className="text-gray-400 text-sm">{option.desc}</p>
-                                                </div>
-                                                <ArrowRight className="w-4 h-4 text-gray-400" />
-                                            </div>
-                                        </motion.button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {currentStep === 2 && (
-                            <div>
-                                <h3 className="text-xl font-semibold text-white mb-6">
-                                    What interests you most?
-                                </h3>
-                                <p className="text-gray-400 mb-6">Select all that apply</p>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {[
-                                        'Web Apps', 'Mobile Apps', 'Data Visualization',
-                                        'E-commerce', 'Social Media', 'Productivity Tools'
-                                    ].map((interest) => (
-                                        <motion.button
-                                            key={interest}
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            onClick={() => handleInterestSelect(interest)}
-                                            className="p-4 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-600 hover:border-blue-500 transition-all text-center"
-                                        >
-                                            <span className="text-white font-medium">{interest}</span>
-                                        </motion.button>
-                                    ))}
-                                </div>
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={handleNext}
-                                    className="mt-6 px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
-                                >
-                                    Continue
-                                </motion.button>
-                            </div>
-                        )}
-
-                        {currentStep === 3 && (
-                            <div className="text-center">
-                                <h3 className="text-xl font-semibold text-white mb-6">
-                                    Let's create your first app!
-                                </h3>
-                                <p className="text-gray-400 mb-8">
-                                    Based on your preferences, we'll generate a sample application
-                                </p>
-
-                                {isGeneratingSample ? (
-                                    <div className="space-y-4">
-                                        <motion.div
-                                            animate={{ rotate: 360 }}
-                                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                                            className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"
-                                        />
-                                        <p className="text-blue-400">Generating your sample app...</p>
-                                    </div>
-                                ) : (
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={generateSampleApp}
-                                        className="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors flex items-center gap-2 mx-auto"
+                            key={currentStep}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3 }}
+                            className="min-h-64"
+                        >
+                            {currentStep === 0 && (
+                                <div className="text-center">
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6"
                                     >
-                                        <Play className="w-4 h-4" />
-                                        Generate Sample App
-                                    </motion.button>
-                                )}
-                            </div>
-                        )}
+                                        <Sparkles className="w-8 h-8 text-primary-foreground" />
+                                    </motion.div>
+                                    <h3 className="m3-headline-small font-semibold text-foreground mb-4">
+                                        Welcome to FragmentsPro!
+                                    </h3>
+                                    <p className="m3-body-medium text-muted-foreground mb-8">
+                                        Build amazing applications with AI in minutes. Let's personalize your experience.
+                                    </p>
+                                    <M3Button
+                                        variant="filled"
+                                        size="lg"
+                                        onClick={handleNext}
+                                        className="mx-auto"
+                                    >
+                                        Get Started
+                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                    </M3Button>
+                                </div>
+                            )}
 
-                        {currentStep === 4 && (
-                            <div className="text-center">
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6"
-                                >
-                                    <Check className="w-8 h-8 text-white" />
-                                </motion.div>
-                                <h3 className="text-xl font-semibold text-white mb-4">
-                                    You're all set!
-                                </h3>
-                                <p className="text-gray-400 mb-8">
-                                    Your sample app has been generated. Start building amazing applications!
-                                </p>
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={handleNext}
-                                    className="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
-                                >
-                                    Start Building
-                                </motion.button>
-                            </div>
-                        )}
-                    </motion.div>
-                </AnimatePresence>
-            </motion.div>
+                            {currentStep === 1 && (
+                                <div>
+                                    <h3 className="m3-headline-small font-semibold text-foreground mb-6">
+                                        What's your experience level?
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {[
+                                            { level: 'beginner' as const, title: 'Beginner', desc: 'New to coding, want to learn' },
+                                            { level: 'intermediate' as const, title: 'Intermediate', desc: 'Some coding experience' },
+                                            { level: 'advanced' as const, title: 'Advanced', desc: 'Experienced developer' }
+                                        ].map((option) => (
+                                            <M3Button
+                                                key={option.level}
+                                                variant="tonal"
+                                                onClick={() => handleExperienceSelect(option.level)}
+                                                className="w-full p-4 justify-between text-left"
+                                            >
+                                                <div>
+                                                    <h4 className="m3-title-medium font-medium text-foreground">{option.title}</h4>
+                                                    <p className="m3-body-small text-muted-foreground">{option.desc}</p>
+                                                </div>
+                                                <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                                            </M3Button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {currentStep === 2 && (
+                                <div>
+                                    <h3 className="m3-headline-small font-semibold text-foreground mb-6">
+                                        What interests you most?
+                                    </h3>
+                                    <p className="m3-body-medium text-muted-foreground mb-6">Select all that apply</p>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {[
+                                            'Web Apps', 'Mobile Apps', 'Data Visualization',
+                                            'E-commerce', 'Social Media', 'Productivity Tools'
+                                        ].map((interest) => (
+                                            <M3Button
+                                                key={interest}
+                                                variant="tonal"
+                                                onClick={() => handleInterestSelect(interest)}
+                                                className="p-4 text-center"
+                                            >
+                                                <span className="m3-body-medium text-foreground">{interest}</span>
+                                            </M3Button>
+                                        ))}
+                                    </div>
+                                    <div className="mt-6">
+                                        <M3Button
+                                            variant="filled"
+                                            onClick={handleNext}
+                                            className="w-full"
+                                        >
+                                            Continue
+                                            <ArrowRight className="w-4 h-4 ml-2" />
+                                        </M3Button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {currentStep === 3 && (
+                                <div className="text-center">
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6"
+                                    >
+                                        <Play className="w-8 h-8 text-primary-foreground" />
+                                    </motion.div>
+                                    <h3 className="m3-headline-small font-semibold text-foreground mb-4">
+                                        Let's create your first app!
+                                    </h3>
+                                    <p className="m3-body-medium text-muted-foreground mb-8">
+                                        We'll generate a sample based on your preferences
+                                    </p>
+                                    {isGeneratingSample ? (
+                                        <div className="flex items-center justify-center gap-3">
+                                            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                            <span className="m3-body-medium text-foreground">Generating your app...</span>
+                                        </div>
+                                    ) : (
+                                        <M3Button
+                                            variant="filled"
+                                            size="lg"
+                                            onClick={generateSampleApp}
+                                            className="mx-auto"
+                                        >
+                                            Generate Sample App
+                                            <Sparkles className="w-4 h-4 ml-2" />
+                                        </M3Button>
+                                    )}
+                                </div>
+                            )}
+
+                            {currentStep === 4 && (
+                                <div className="text-center">
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        className="w-16 h-16 bg-success rounded-full flex items-center justify-center mx-auto mb-6"
+                                    >
+                                        <Check className="w-8 h-8 text-success-foreground" />
+                                    </motion.div>
+                                    <h3 className="m3-headline-small font-semibold text-foreground mb-4">
+                                        You're all set!
+                                    </h3>
+                                    <p className="m3-body-medium text-muted-foreground mb-8">
+                                        Start building amazing applications
+                                    </p>
+                                    <M3Button
+                                        variant="filled"
+                                        size="lg"
+                                        onClick={handleNext}
+                                        className="mx-auto"
+                                    >
+                                        Start Building
+                                        <Rocket className="w-4 h-4 ml-2" />
+                                    </M3Button>
+                                </div>
+                            )}
+                        </motion.div>
+                    </AnimatePresence>
+                </M3CardContent>
+            </M3Card>
         </div>
     )
 } 

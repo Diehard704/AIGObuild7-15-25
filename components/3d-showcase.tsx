@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Text, Box } from '@react-three/drei'
+import { M3Button } from '@/components/ui/m3-button'
+import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
 import * as THREE from 'three'
 
 interface AppExample {
@@ -175,23 +177,23 @@ export function ThreeDShowcase() {
                     transition={{ duration: 1 }}
                     className="text-center pointer-events-auto"
                 >
-                    <h1 className="text-6xl md:text-8xl font-black mb-6">
-                        <span className="gradient-text">Build</span>
+                    <h1 className="m3-display-large font-black mb-6">
+                        <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Build</span>
                         <br />
-                        <span className="text-white">Anything with AI</span>
+                        <span className="text-primary-foreground">Anything with AI</span>
                     </h1>
 
-                    <p className="text-xl md:text-2xl text-blue-200 mb-8 max-w-3xl mx-auto">
+                    <p className="m3-headline-medium text-primary-foreground/80 mb-8 max-w-3xl mx-auto">
                         Interact with the 3D showcase above to see examples of AI-generated applications
                     </p>
 
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xl font-bold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+                    <M3Button
+                        variant="filled"
+                        size="lg"
+                        className="px-8 py-4 text-xl font-bold"
                     >
                         Start Building Now
-                    </motion.button>
+                    </M3Button>
                 </motion.div>
             </div>
 
@@ -204,7 +206,7 @@ export function ThreeDShowcase() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={() => setSelectedApp(app)}
-                            className="p-3 bg-gray-800/80 backdrop-blur-sm rounded-lg border border-gray-700 hover:border-blue-500 transition-colors"
+                            className="p-3 bg-surface-container/80 backdrop-blur-sm rounded-xl border border-outline hover:border-primary transition-colors m3-ripple"
                         >
                             <span className="text-2xl">{app.icon}</span>
                         </motion.button>
@@ -218,29 +220,33 @@ export function ThreeDShowcase() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center pointer-events-auto"
+                    className="absolute inset-0 bg-surface/50 backdrop-blur-sm flex items-center justify-center pointer-events-auto"
                     onClick={() => setSelectedApp(null)}
                 >
-                    <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="bg-gray-900 rounded-2xl p-8 max-w-md mx-4 border border-gray-700"
+                    <M3Card
+                        variant="elevated"
+                        className="max-w-md mx-4"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="text-center">
+                        <M3CardHeader className="text-center">
                             <div className="text-4xl mb-4">{selectedApp.icon}</div>
-                            <h3 className="text-2xl font-bold text-white mb-2">{selectedApp.title}</h3>
-                            <p className="text-gray-400 mb-6">{selectedApp.description}</p>
-
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
+                            <M3CardTitle className="m3-headline-medium font-bold text-foreground mb-2">
+                                {selectedApp.title}
+                            </M3CardTitle>
+                            <p className="m3-body-medium text-muted-foreground mb-6">
+                                {selectedApp.description}
+                            </p>
+                        </M3CardHeader>
+                        <M3CardContent className="text-center">
+                            <M3Button
+                                variant="filled"
+                                size="default"
+                                className="w-full"
                             >
                                 Generate This App
-                            </motion.button>
-                        </div>
-                    </motion.div>
+                            </M3Button>
+                        </M3CardContent>
+                    </M3Card>
                 </motion.div>
             )}
         </div>
