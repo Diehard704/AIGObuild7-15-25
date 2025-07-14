@@ -18,9 +18,10 @@ const suggestions = [
 
 interface TypewriterChatProps {
   onGenerate: (prompt: string) => void
+  isLoading?: boolean
 }
 
-export function TypewriterChat({ onGenerate }: TypewriterChatProps) {
+export function TypewriterChat({ onGenerate, isLoading = false }: TypewriterChatProps) {
   const [currentText, setCurrentText] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [input, setInput] = useState('')
@@ -165,10 +166,11 @@ export function TypewriterChat({ onGenerate }: TypewriterChatProps) {
               onBlur={() => setIsFocused(false)}
               placeholder={currentText}
               rows={1}
-              className="w-full bg-transparent text-blue-100 placeholder-blue-300/60 text-xl outline-none resize-none font-light relative z-10"
+              disabled={isLoading}
+              className="w-full bg-transparent text-blue-100 placeholder-blue-300/60 text-xl outline-none resize-none font-light relative z-10 disabled:opacity-50"
               style={{ overflow: 'hidden' }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
+                if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
                   e.preventDefault()
                   handleSubmit(e)
                 }

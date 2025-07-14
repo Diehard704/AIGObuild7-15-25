@@ -408,7 +408,7 @@ export default function PricingPage() {
                   Is there a free trial?
                 </h3>
                 <p className="m3-body-small text-muted-foreground">
-                  Yes! Start with our free tier to experience the platform, then upgrade when you're ready to build more.
+                  Yes! Start with our free tier to experience the platform, then upgrade when you&apos;re ready to build more.
                 </p>
               </M3CardContent>
             </M3Card>

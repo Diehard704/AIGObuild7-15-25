@@ -133,8 +133,8 @@ export default function LandingPage() {
             className="max-w-4xl mx-auto"
           >
             <TypewriterChat onGenerate={(prompt) => {
-              window.location.href = `/build?prompt=${encodeURIComponent(prompt)}`
-            }} />
+              window.location.href = `/build/generate?prompt=${encodeURIComponent(prompt)}&template=nextjs-developer`
+            }} isLoading={false} />
           </motion.div>
         </div>
 
@@ -289,7 +289,7 @@ export default function LandingPage() {
                       </div>
                     </div>
                     <p className="m3-body-medium text-muted-foreground mb-4">
-                      "{testimonial.content}"
+                      &quot;{testimonial.content}&quot;
                     </p>
                     <div className="flex items-center">
                       {[...Array(testimonial.rating)].map((_, i) => (

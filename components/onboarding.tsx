@@ -320,7 +320,7 @@ export function Onboarding() {
                         </div>
                         <div>
                             <h1 className="m3-headline-medium font-bold text-foreground">Welcome to FragmentsPro</h1>
-                            <p className="m3-body-medium text-muted-foreground">Let's get you started</p>
+                            <p className="m3-body-medium text-muted-foreground">Let&apos;s get you started</p>
                         </div>
                     </div>
 

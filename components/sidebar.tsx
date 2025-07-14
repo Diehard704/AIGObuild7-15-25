@@ -52,6 +52,12 @@ const navigationItems = [
         href: '/code-editor-demo',
         icon: Code,
         description: 'Enhanced editor demo'
+    },
+    {
+        name: 'AI Refactor',
+        href: '/refactor-working',
+        icon: Zap,
+        description: 'AI-powered code refactoring'
     }
 ]
 

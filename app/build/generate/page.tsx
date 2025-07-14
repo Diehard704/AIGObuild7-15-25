@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { M3Button } from '@/components/ui/m3-button'
@@ -39,25 +39,25 @@ export default function GeneratePage() {
     const [error, setError] = useState<string | null>(null)
 
     const templates = {
-        nextjs: {
+        'nextjs-developer': {
             name: 'Next.js Developer',
             description: 'Full-stack React applications with modern tooling',
             icon: <Code className="w-6 h-6" />,
             color: 'from-primary to-secondary'
         },
-        vue: {
+        'vue-developer': {
             name: 'Vue.js Developer',
             description: 'Progressive JavaScript framework for building UIs',
             icon: <Globe className="w-6 h-6" />,
             color: 'from-secondary to-tertiary'
         },
-        streamlit: {
+        'streamlit-developer': {
             name: 'Streamlit Developer',
             description: 'Data science applications with visualizations',
             icon: <TrendingUp className="w-6 h-6" />,
             color: 'from-tertiary to-warning'
         },
-        gradio: {
+        'gradio-developer': {
             name: 'Gradio Developer',
             description: 'Machine learning interfaces and model deployment',
             icon: <Zap className="w-6 h-6" />,
@@ -76,43 +76,118 @@ export default function GeneratePage() {
         'Finalizing application...'
     ]
 
-    const handleGenerateApp = async (prompt: string) => {
+    const handleGenerateApp = useCallback(async (prompt: string) => {
         setIsGenerating(true)
         setError(null)
         setProgress(0)
         setGenerationStep('')
 
         try {
-            // Simulate generation process
-            for (let i = 0; i < generationSteps.length; i++) {
-                setGenerationStep(generationSteps[i])
-                setProgress(((i + 1) / generationSteps.length) * 100)
-                await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000))
+            // Step 1: Analyzing requirements
+            setGenerationStep('Analyzing requirements...')
+            setProgress(10)
+            await new Promise(resolve => setTimeout(resolve, 1000))
+
+            // Step 2: Generating code structure
+            setGenerationStep('Generating code structure...')
+            setProgress(25)
+            await new Promise(resolve => setTimeout(resolve, 1000))
+
+            // Step 3: Creating components
+            setGenerationStep('Creating components...')
+            setProgress(40)
+            await new Promise(resolve => setTimeout(resolve, 1000))
+
+            // Step 4: Setting up styling
+            setGenerationStep('Setting up styling...')
+            setProgress(60)
+            await new Promise(resolve => setTimeout(resolve, 1000))
+
+            // Step 5: Configuring deployment
+            setGenerationStep('Configuring deployment...')
+            setProgress(80)
+            await new Promise(resolve => setTimeout(resolve, 1000))
+
+            // Step 6: Call AI API to generate actual code
+            setGenerationStep('Finalizing application...')
+            setProgress(90)
+
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    messages: [
+                        {
+                            role: 'user',
+                            content: prompt
+                        }
+                    ],
+                    template: template || 'nextjs-developer',
+                    userID: 'anonymous',
+                    teamID: undefined
+                })
+            })
+
+            if (!response.ok) {
+                const errorText = await response.text()
+                throw new Error(`AI API request failed: ${response.status} - ${errorText}`)
             }
 
-            // Simulate successful generation
+            const data = await response.json()
+
+            if (!data || !data.code) {
+                throw new Error('AI generated invalid response. Please try again with a different prompt.')
+            }
+            setProgress(100)
+
+            // Create sandbox for the generated app
+            const sandboxResponse = await fetch('/api/sandbox', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fragment: data,
+                    userID: 'anonymous',
+                    teamID: undefined,
+                    accessToken: undefined
+                })
+            })
+
+            if (!sandboxResponse.ok) {
+                throw new Error('Failed to create sandbox')
+            }
+
+            const sandboxData = await sandboxResponse.json()
+
+            // Set the generated app with real data
             setGeneratedApp({
                 id: 'app-' + Date.now(),
-                name: 'Generated App',
+                name: data.title || 'Generated App',
                 description: prompt,
-                template: template || 'nextjs',
+                template: template || 'nextjs-developer',
                 status: 'ready',
-                previewUrl: 'https://example.com/preview',
-                deploymentUrl: 'https://example.com/deploy'
+                previewUrl: sandboxData.url || 'https://example.com/preview',
+                deploymentUrl: sandboxData.url || 'https://example.com/deploy',
+                fragment: data,
+                sandboxId: sandboxData.sbxId
             })
 
         } catch (err) {
-            setError('Failed to generate application. Please try again.')
+            console.error('Generation error:', err)
+            setError(err instanceof Error ? err.message : 'Failed to generate application. Please try again.')
         } finally {
             setIsGenerating(false)
         }
-    }
+    }, [template])
 
     useEffect(() => {
         if (prompt) {
             handleGenerateApp(prompt)
         }
-    }, [prompt])
+    }, [prompt, handleGenerateApp])
 
     return (
         <div className="min-h-screen bg-background">
@@ -200,7 +275,7 @@ export default function GeneratePage() {
                                 </M3CardTitle>
                             </M3CardHeader>
                             <M3CardContent className="p-6">
-                                <TypewriterChat onGenerate={handleGenerateApp} />
+                                <TypewriterChat onGenerate={handleGenerateApp} isLoading={isGenerating} />
                             </M3CardContent>
                         </M3Card>
                     </motion.section>
@@ -249,8 +324,8 @@ export default function GeneratePage() {
                                             {generationSteps.map((step, index) => (
                                                 <div key={step} className="flex items-center gap-3">
                                                     <div className={`w-6 h-6 rounded-full flex items-center justify-center ${index < Math.floor(progress / (100 / generationSteps.length))
-                                                            ? 'bg-success text-success-foreground'
-                                                            : 'bg-surface-container text-muted-foreground'
+                                                        ? 'bg-success text-success-foreground'
+                                                        : 'bg-surface-container text-muted-foreground'
                                                         }`}>
                                                         {index < Math.floor(progress / (100 / generationSteps.length)) ? (
                                                             <CheckCircle className="w-4 h-4" />
@@ -259,8 +334,8 @@ export default function GeneratePage() {
                                                         )}
                                                     </div>
                                                     <span className={`m3-body-small ${index < Math.floor(progress / (100 / generationSteps.length))
-                                                            ? 'text-foreground'
-                                                            : 'text-muted-foreground'
+                                                        ? 'text-foreground'
+                                                        : 'text-muted-foreground'
                                                         }`}>
                                                         {step}
                                                     </span>
@@ -322,7 +397,40 @@ export default function GeneratePage() {
                                                     <Rocket className="w-4 h-4 mr-2" />
                                                     Deploy App
                                                 </M3Button>
+
+                                                <M3Button
+                                                    variant="outlined"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        if (generatedApp.fragment && generatedApp.fragment.code) {
+                                                            const codeStr = typeof generatedApp.fragment.code === 'string'
+                                                                ? generatedApp.fragment.code
+                                                                : JSON.stringify(generatedApp.fragment.code, null, 2)
+                                                            navigator.clipboard.writeText(codeStr)
+                                                            alert('Code copied to clipboard!')
+                                                        }
+                                                    }}
+                                                >
+                                                    <Code className="w-4 h-4 mr-2" />
+                                                    Copy Code
+                                                </M3Button>
                                             </div>
+
+                                            {generatedApp.fragment && generatedApp.fragment.code && (
+                                                <div className="mt-4">
+                                                    <h4 className="m3-title-small font-semibold text-foreground mb-2">
+                                                        Generated Code Preview
+                                                    </h4>
+                                                    <div className="bg-surface-container rounded-lg p-3 max-h-40 overflow-y-auto">
+                                                        <pre className="text-xs text-muted-foreground">
+                                                            {typeof generatedApp.fragment.code === 'string'
+                                                                ? generatedApp.fragment.code.substring(0, 500) + '...'
+                                                                : JSON.stringify(generatedApp.fragment.code, null, 2).substring(0, 500) + '...'
+                                                            }
+                                                        </pre>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 )}
@@ -337,7 +445,7 @@ export default function GeneratePage() {
                                                 Ready to Generate
                                             </h3>
                                             <p className="m3-body-medium text-muted-foreground">
-                                                Describe your app idea in the chat and we'll generate it for you
+                                                Describe your app idea in the chat and we&apos;ll generate it for you
                                             </p>
                                         </div>
                                     </div>

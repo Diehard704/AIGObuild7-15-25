@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { M3Button } from '@/components/ui/m3-button'
 import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
+import { TypewriterChat } from '@/components/typewriter-chat'
 import {
   Sparkles,
   Rocket,
@@ -27,7 +28,7 @@ export default function BuildPage() {
 
   const templates = [
     {
-      id: 'nextjs',
+      id: 'nextjs-developer',
       name: 'Next.js Developer',
       description: 'Full-stack React applications with modern tooling and deployment',
       icon: <Code className="w-6 h-6" />,
@@ -37,7 +38,7 @@ export default function BuildPage() {
       popularity: 95
     },
     {
-      id: 'vue',
+      id: 'vue-developer',
       name: 'Vue.js Developer',
       description: 'Progressive JavaScript framework for building user interfaces',
       icon: <Globe className="w-6 h-6" />,
@@ -47,7 +48,7 @@ export default function BuildPage() {
       popularity: 88
     },
     {
-      id: 'streamlit',
+      id: 'streamlit-developer',
       name: 'Streamlit Developer',
       description: 'Data science applications with interactive visualizations',
       icon: <TrendingUp className="w-6 h-6" />,
@@ -57,7 +58,7 @@ export default function BuildPage() {
       popularity: 92
     },
     {
-      id: 'gradio',
+      id: 'gradio-developer',
       name: 'Gradio Developer',
       description: 'Machine learning interfaces and model deployment',
       icon: <Zap className="w-6 h-6" />,
@@ -172,11 +173,33 @@ export default function BuildPage() {
           </div>
         </motion.section>
 
-        {/* Template Selection */}
+        {/* Quick Start Chat */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
+          className="mb-16"
+        >
+          <M3Card variant="elevated" className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
+            <M3CardHeader>
+              <M3CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Describe Your App Idea
+              </M3CardTitle>
+            </M3CardHeader>
+            <M3CardContent className="p-6">
+              <TypewriterChat onGenerate={(prompt) => {
+                window.location.href = `/build/generate?prompt=${encodeURIComponent(prompt)}&template=nextjs-developer`
+              }} isLoading={false} />
+            </M3CardContent>
+          </M3Card>
+        </motion.section>
+
+        {/* Template Selection */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
           className="mb-16"
         >
           <div className="flex items-center justify-between mb-8">
@@ -199,7 +222,7 @@ export default function BuildPage() {
                 key={template.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
+                transition={{ delay: 0.6 + index * 0.1 }}
               >
                 <M3Card
                   variant={selectedTemplate === template.id ? "elevated" : "filled"}
@@ -262,7 +285,7 @@ export default function BuildPage() {
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
+          transition={{ delay: 0.8 }}
           className="mb-16"
         >
           <h2 className="m3-headline-medium font-bold text-foreground mb-8 text-center">
@@ -275,7 +298,7 @@ export default function BuildPage() {
                 key={feature.title}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8 + index * 0.1 }}
+                transition={{ delay: 0.9 + index * 0.1 }}
               >
                 <M3Card variant="elevated" className="h-full hover:shadow-lg transition-shadow">
                   <M3CardContent className="p-6">
@@ -299,7 +322,7 @@ export default function BuildPage() {
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
+          transition={{ delay: 1.0 }}
           className="mb-16"
         >
           <h2 className="m3-headline-medium font-bold text-foreground mb-8 text-center">
@@ -349,7 +372,7 @@ export default function BuildPage() {
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1 }}
+          transition={{ delay: 1.2 }}
           className="text-center"
         >
           <M3Card variant="elevated" className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">

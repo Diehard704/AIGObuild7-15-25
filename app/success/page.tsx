@@ -95,8 +95,8 @@ export default function SuccessPage() {
           </motion.h1>
 
           <p className="m3-body-large text-muted-foreground max-w-3xl mx-auto">
-            Your account has been successfully created and you're now ready to start building
-            amazing AI-powered applications. Let's get started!
+            Your account has been successfully created and you&apos;re now ready to start building
+            amazing AI-powered applications. Let&apos;s get started!
           </p>
         </div>
       </motion.div>
@@ -118,7 +118,7 @@ export default function SuccessPage() {
               </div>
 
               <h2 className="m3-headline-medium font-bold text-foreground mb-4">
-                You're All Set! 🚀
+                You&apos;re All Set! 🚀
               </h2>
 
               <p className="m3-body-large text-muted-foreground mb-6 max-w-2xl mx-auto">
@@ -324,7 +324,7 @@ export default function SuccessPage() {
               </h2>
 
               <p className="m3-body-large text-muted-foreground mb-6 max-w-2xl mx-auto">
-                We're here to help! Check out our documentation, join our community,
+                We&apos;re here to help! Check out our documentation, join our community,
                 or reach out to our support team.
               </p>
 

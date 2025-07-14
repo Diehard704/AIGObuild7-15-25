@@ -2,7 +2,20 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { EnhancedCodeEditor } from '@/components/enhanced-code-editor'
+import dynamic from 'next/dynamic'
+
+// Dynamically import the enhanced code editor to avoid SSR issues
+const EnhancedCodeEditor = dynamic(() => import('@/components/enhanced-code-editor').then(mod => ({ default: mod.EnhancedCodeEditor })), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-96 bg-surface-container flex items-center justify-center">
+            <div className="text-center">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p className="text-sm text-muted-foreground">Loading enhanced code editor...</p>
+            </div>
+        </div>
+    )
+})
 import { M3Button } from '@/components/ui/m3-button'
 import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
 import {
@@ -108,6 +121,13 @@ export function App() {
     const handleLanguageChange = (newLanguage: string) => {
         setLanguage(newLanguage)
         setFileName(`app.${newLanguage === 'typescript' ? 'tsx' : 'jsx'}`)
+    }
+
+    const [editorError, setEditorError] = useState<string | null>(null)
+
+    const handleEditorError = (error: Error) => {
+        console.error('Editor error:', error)
+        setEditorError(error.message)
     }
 
     return (
@@ -270,17 +290,42 @@ export function App() {
                     transition={{ delay: 0.4 }}
                     className="mb-8"
                 >
-                    <EnhancedCodeEditor
-                        code={code}
-                        language={language}
-                        onChange={setCode}
-                        onRun={handleRunCode}
-                        suggestions={aiSuggestions}
-                        projectId="demo-project"
-                        fileName={fileName}
-                        collaborators={isCollaborating ? sampleCollaborators : []}
-                        gitEnabled={true}
-                    />
+                    {editorError ? (
+                        <M3Card variant="elevated" className="bg-error/10 border-error/20">
+                            <M3CardContent className="p-6">
+                                <div className="text-center">
+                                    <div className="w-12 h-12 bg-error/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                        <Code className="w-6 h-6 text-error" />
+                                    </div>
+                                    <h3 className="m3-title-medium font-semibold text-error mb-2">
+                                        Editor Error
+                                    </h3>
+                                    <p className="m3-body-medium text-muted-foreground mb-4">
+                                        {editorError}
+                                    </p>
+                                    <M3Button
+                                        variant="filled"
+                                        size="sm"
+                                        onClick={() => setEditorError(null)}
+                                    >
+                                        Try Again
+                                    </M3Button>
+                                </div>
+                            </M3CardContent>
+                        </M3Card>
+                    ) : (
+                        <EnhancedCodeEditor
+                            code={code}
+                            language={language}
+                            onChange={setCode}
+                            onRun={handleRunCode}
+                            suggestions={aiSuggestions}
+                            projectId="demo-project"
+                            fileName={fileName}
+                            collaborators={isCollaborating ? sampleCollaborators : []}
+                            gitEnabled={true}
+                        />
+                    )}
                 </motion.section>
 
                 {/* Collaboration Status */}
