@@ -58,6 +58,12 @@ const navigationItems = [
         href: '/refactor-working',
         icon: Zap,
         description: 'AI-powered code refactoring'
+    },
+    {
+        name: 'Customizer Demo',
+        href: '/customizer-demo',
+        icon: Sparkles,
+        description: 'Loading screens & AI customization'
     }
 ]
 

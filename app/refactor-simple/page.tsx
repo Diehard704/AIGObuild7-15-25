@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 export default function RefactorSimple() {
   const [code, setCode] = useState('console.log("hello world")')
-  const [result, setResult] = useState(null)
+  const [result, setResult] = useState<any>(null)
   const [loading, setLoading] = useState(false)
 
   const handleRefactor = async () => {

@@ -29,7 +29,7 @@ function UserProfile({ userId }) {
   )
 }`)
   
-  const [result, setResult] = useState(null)
+  const [result, setResult] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [userTier, setUserTier] = useState('free')
 
