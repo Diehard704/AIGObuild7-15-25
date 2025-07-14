@@ -321,53 +321,26 @@ export function EnhancedCodeEditor({
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
                                 <Code className="w-4 h-4 text-primary" />
-                                <span className="m3-body-medium text-foreground">Language:</span>
-                                <span className="m3-title-small font-semibold text-primary capitalize">{language}</span>
+                                <span className="m3-body-medium text-foreground">{fileName}</span>
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <span className="m3-body-small text-muted-foreground">File:</span>
-                                <span className="m3-body-small font-medium text-foreground">{fileName}</span>
+                                <span className="m3-body-small text-muted-foreground">Language:</span>
+                                <span className="m3-body-medium font-medium text-foreground capitalize">{language}</span>
                             </div>
 
                             {gitEnabled && (
                                 <div className="flex items-center gap-2">
-                                    <GitBranch className="w-4 h-4 text-success" />
-                                    <span className="m3-body-small text-muted-foreground">Branch:</span>
-                                    <span className="m3-body-small font-medium text-success">{gitStatus.currentBranch}</span>
+                                    <GitBranch className="w-4 h-4 text-tertiary" />
+                                    <span className="m3-body-small text-muted-foreground">{gitStatus.currentBranch}</span>
                                 </div>
                             )}
                         </div>
 
                         <div className="flex items-center gap-2">
-                            {/* Collaboration Toggle */}
-                            <M3Button
-                                variant={isCollaborating ? "filled" : "outlined"}
-                                size="sm"
-                                onClick={toggleCollaboration}
-                                className="flex items-center gap-2"
-                            >
-                                <Users className="w-4 h-4" />
-                                {isCollaborating ? 'Collaborating' : 'Start Collaboration'}
-                            </M3Button>
-
-                            {/* Git Panel Toggle */}
-                            {gitEnabled && (
-                                <M3Button
-                                    variant={showGitPanel ? "filled" : "outlined"}
-                                    size="sm"
-                                    onClick={() => setShowGitPanel(!showGitPanel)}
-                                    className="flex items-center gap-2"
-                                >
-                                    <GitBranchIcon className="w-4 h-4" />
-                                    Git
-                                </M3Button>
-                            )}
-
-                            {/* AI Suggestions */}
                             {suggestions.length > 0 && (
                                 <M3Button
-                                    variant={showSuggestions ? "filled" : "outlined"}
+                                    variant="outlined"
                                     size="sm"
                                     onClick={() => setShowSuggestions(!showSuggestions)}
                                     className="flex items-center gap-2"
@@ -377,7 +350,30 @@ export function EnhancedCodeEditor({
                                 </M3Button>
                             )}
 
-                            {/* Action Buttons */}
+                            {collaborators.length > 0 && (
+                                <M3Button
+                                    variant="outlined"
+                                    size="sm"
+                                    onClick={toggleCollaboration}
+                                    className={`flex items-center gap-2 ${isCollaborating ? 'bg-success/20 text-success' : ''}`}
+                                >
+                                    <Users className="w-4 h-4" />
+                                    {isCollaborating ? 'Collaborating' : 'Start Collaboration'}
+                                </M3Button>
+                            )}
+
+                            {gitEnabled && (
+                                <M3Button
+                                    variant="outlined"
+                                    size="sm"
+                                    onClick={() => setShowGitPanel(!showGitPanel)}
+                                    className="flex items-center gap-2"
+                                >
+                                    <GitBranch className="w-4 h-4" />
+                                    Git
+                                </M3Button>
+                            )}
+
                             <M3Button
                                 variant="outlined"
                                 size="sm"
@@ -437,9 +433,8 @@ export function EnhancedCodeEditor({
                                     wordWrap: 'on',
                                     theme: 'vs-dark',
                                     suggestOnTriggerCharacters: true,
-                                    acceptSuggestionOnCommitCharacter: true,
                                     acceptSuggestionOnEnter: 'on',
-                                    tabCompletion: 'on',
+                                    tabCompletion: 'off',
                                     wordBasedSuggestions: 'on',
                                     parameterHints: {
                                         enabled: true,
@@ -456,14 +451,7 @@ export function EnhancedCodeEditor({
                                     showFoldingControls: 'always',
                                     unfoldOnClickAfterEnd: false,
                                     links: true,
-                                    colorDecorators: true,
-                                    lightbulb: {
-                                        enabled: true
-                                    },
-                                    codeActionsOnSave: {
-                                        'source.fixAll': 'explicit',
-                                        'source.organizeImports': 'explicit'
-                                    }
+                                    colorDecorators: true
                                 }}
                             />
                         </M3CardContent>
@@ -473,49 +461,44 @@ export function EnhancedCodeEditor({
                 {/* Side Panel */}
                 <div className="space-y-4">
                     {/* Git Panel */}
-                    {gitEnabled && showGitPanel && (
+                    {showGitPanel && gitEnabled && (
                         <M3Card variant="elevated">
                             <M3CardHeader>
                                 <M3CardTitle className="flex items-center gap-2">
-                                    <GitBranchIcon className="w-5 h-5 text-success" />
+                                    <GitBranch className="w-5 h-5 text-tertiary" />
                                     Git Status
                                 </M3CardTitle>
                             </M3CardHeader>
                             <M3CardContent className="space-y-4">
-                                {/* Staged Changes */}
+                                {/* Staged Files */}
                                 {gitStatus.staged.length > 0 && (
                                     <div>
-                                        <h4 className="m3-title-small font-semibold text-foreground mb-2 flex items-center gap-2">
-                                            <Plus className="w-4 h-4 text-success" />
-                                            Staged Changes
-                                        </h4>
+                                        <h4 className="m3-title-small font-medium text-foreground mb-2">Staged</h4>
                                         <div className="space-y-1">
-                                            {gitStatus.staged.map((file, index) => (
-                                                <div key={index} className="flex items-center justify-between p-2 bg-success/10 rounded">
-                                                    <span className="m3-body-small text-foreground">{file}</span>
+                                            {gitStatus.staged.map((file) => (
+                                                <div key={file} className="flex items-center gap-2 p-2 bg-success/10 rounded">
                                                     <CheckCircle className="w-4 h-4 text-success" />
+                                                    <span className="m3-body-small text-foreground">{file}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 )}
 
-                                {/* Unstaged Changes */}
+                                {/* Unstaged Files */}
                                 {gitStatus.unstaged.length > 0 && (
                                     <div>
-                                        <h4 className="m3-title-small font-semibold text-foreground mb-2 flex items-center gap-2">
-                                            <Minus className="w-4 h-4 text-warning" />
-                                            Unstaged Changes
-                                        </h4>
+                                        <h4 className="m3-title-small font-medium text-foreground mb-2">Modified</h4>
                                         <div className="space-y-1">
-                                            {gitStatus.unstaged.map((file, index) => (
-                                                <div key={index} className="flex items-center justify-between p-2 bg-warning/10 rounded">
+                                            {gitStatus.unstaged.map((file) => (
+                                                <div key={file} className="flex items-center gap-2 p-2 bg-warning/10 rounded">
+                                                    <AlertCircle className="w-4 h-4 text-warning" />
                                                     <span className="m3-body-small text-foreground">{file}</span>
                                                     <M3Button
                                                         variant="outlined"
                                                         size="sm"
                                                         onClick={handleGitStage}
-                                                        className="h-6 px-2"
+                                                        className="ml-auto"
                                                     >
                                                         Stage
                                                     </M3Button>
@@ -525,8 +508,8 @@ export function EnhancedCodeEditor({
                                     </div>
                                 )}
 
-                                {/* Git Actions */}
-                                <div className="flex gap-2">
+                                {/* Actions */}
+                                <div className="flex items-center gap-2">
                                     <M3Button
                                         variant="filled"
                                         size="sm"
@@ -534,35 +517,21 @@ export function EnhancedCodeEditor({
                                         disabled={gitStatus.staged.length === 0}
                                         className="flex-1"
                                     >
-                                        <GitCommitIcon className="w-4 h-4 mr-2" />
+                                        <GitCommit className="w-4 h-4 mr-2" />
                                         Commit
-                                    </M3Button>
-                                    <M3Button
-                                        variant="outlined"
-                                        size="sm"
-                                        onClick={handleSave}
-                                        className="flex-1"
-                                    >
-                                        <Save className="w-4 h-4 mr-2" />
-                                        Save
                                     </M3Button>
                                 </div>
 
                                 {/* Recent Commits */}
                                 {gitStatus.commits.length > 0 && (
                                     <div>
-                                        <h4 className="m3-title-small font-semibold text-foreground mb-2 flex items-center gap-2">
-                                            <History className="w-4 h-4" />
-                                            Recent Commits
-                                        </h4>
+                                        <h4 className="m3-title-small font-medium text-foreground mb-2">Recent Commits</h4>
                                         <div className="space-y-2 max-h-32 overflow-y-auto">
                                             {gitStatus.commits.slice(0, 3).map((commit) => (
                                                 <div key={commit.id} className="p-2 bg-surface-container rounded">
                                                     <div className="m3-body-small font-medium text-foreground">{commit.message}</div>
-                                                    <div className="m3-body-small text-muted-foreground flex items-center gap-2">
-                                                        <span>{commit.author}</span>
-                                                        <span>•</span>
-                                                        <span>{new Date(commit.timestamp).toLocaleDateString()}</span>
+                                                    <div className="m3-body-small text-muted-foreground">
+                                                        {new Date(commit.timestamp).toLocaleDateString()}
                                                     </div>
                                                 </div>
                                             ))}
@@ -573,13 +542,13 @@ export function EnhancedCodeEditor({
                         </M3Card>
                     )}
 
-                    {/* Collaborators Panel */}
-                    {isCollaborating && (
+                    {/* Collaboration Panel */}
+                    {isCollaborating && activeCollaborators.length > 0 && (
                         <M3Card variant="elevated">
                             <M3CardHeader>
                                 <M3CardTitle className="flex items-center gap-2">
                                     <Users className="w-5 h-5 text-primary" />
-                                    Collaborators ({activeCollaborators.length})
+                                    Active Collaborators
                                 </M3CardTitle>
                             </M3CardHeader>
                             <M3CardContent>
@@ -593,12 +562,8 @@ export function EnhancedCodeEditor({
                                                 {collaborator.name.charAt(0)}
                                             </div>
                                             <div className="flex-1">
-                                                <div className="m3-body-small font-medium text-foreground">{collaborator.name}</div>
-                                                {collaborator.cursor && (
-                                                    <div className="m3-body-small text-muted-foreground">
-                                                        Line {collaborator.cursor.line}, Col {collaborator.cursor.column}
-                                                    </div>
-                                                )}
+                                                <div className="m3-body-medium font-medium text-foreground">{collaborator.name}</div>
+                                                <div className="m3-body-small text-muted-foreground">Online</div>
                                             </div>
                                             <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
                                         </div>

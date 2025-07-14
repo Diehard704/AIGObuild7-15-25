@@ -3,170 +3,306 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-    Heart, MessageCircle, Share2, Eye, Star, Trophy,
-    Users, Calendar, TrendingUp, Award, Zap, Rocket
+    Users, MessageCircle, Heart, Share2, Bookmark, Star, TrendingUp,
+    Award, Trophy, Calendar, Clock, MapPin, Globe, Filter, Search,
+    Plus, Edit, Trash2, Flag, MoreHorizontal, UserPlus, Users2,
+    MessageSquare, ThumbsUp, Eye, Download, Code, Palette, Database,
+    Smartphone, Monitor, Tablet, Zap, Lightbulb, Target, BarChart3,
+    BookOpen, HelpCircle, Newspaper
 } from 'lucide-react'
+import { M3Button } from '@/components/ui/m3-button'
+import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
 
-interface CommunityApp {
+interface CommunityPost {
     id: string
-    title: string
-    description: string
     author: {
+        id: string
         name: string
         avatar: string
         level: 'beginner' | 'intermediate' | 'expert'
+        badges: string[]
+        followers: number
+        projects: number
     }
-    template: string
-    votes: number
+    content: string
+    title: string
+    category: string
+    tags: string[]
+    likes: number
     comments: number
+    shares: number
     views: number
     createdAt: string
-    tags: string[]
-    image: string
-    isFeatured?: boolean
-    isVoted?: boolean
+    isLiked: boolean
+    isBookmarked: boolean
+    attachments?: {
+        type: 'image' | 'video' | 'code' | 'file'
+        url: string
+        name: string
+    }[]
+    project?: {
+        id: string
+        name: string
+        description: string
+        preview: string
+        techStack: string[]
+        liveUrl?: string
+        githubUrl?: string
+    }
 }
 
-interface Challenge {
+interface CommunityEvent {
     id: string
     title: string
     description: string
-    prize: string
-    participants: number
-    deadline: string
-    status: 'active' | 'upcoming' | 'completed'
-    category: string
-    difficulty: 'beginner' | 'intermediate' | 'advanced'
+    date: string
+    time: string
+    location: string
+    type: 'workshop' | 'hackathon' | 'meetup' | 'webinar'
+    attendees: number
+    maxAttendees: number
+    organizer: {
+        name: string
+        avatar: string
+    }
+    tags: string[]
+    isRegistered: boolean
+}
+
+interface LeaderboardUser {
+    id: string
+    name: string
+    avatar: string
+    rank: number
+    points: number
+    level: string
+    achievements: string[]
+    projects: number
+    contributions: number
+    streak: number
 }
 
 export function CommunityFeatures() {
-    const [selectedTab, setSelectedTab] = useState<'showcase' | 'challenges' | 'leaderboard'>('showcase')
-    const [sortBy, setSortBy] = useState<'popular' | 'recent' | 'trending'>('popular')
-    const [communityApps, setCommunityApps] = useState<CommunityApp[]>([
+    const [activeTab, setActiveTab] = useState<'feed' | 'events' | 'leaderboard' | 'projects'>('feed')
+    const [searchQuery, setSearchQuery] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState<string>('all')
+    const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'trending'>('recent')
+    const [showCreatePost, setShowCreatePost] = useState(false)
+    const [selectedPost, setSelectedPost] = useState<string | null>(null)
+
+    const [posts, setPosts] = useState<CommunityPost[]>([
         {
             id: '1',
-            title: 'AI-Powered Task Manager',
-            description: 'Smart task management with AI prioritization and natural language processing',
             author: {
+                id: 'user1',
                 name: 'Sarah Chen',
-                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-                level: 'expert'
+                avatar: '/avatars/sarah.jpg',
+                level: 'expert',
+                badges: ['Top Contributor', 'AI Expert', 'Community Leader'],
+                followers: 1247,
+                projects: 23
             },
-            template: 'Next.js',
-            votes: 234,
-            comments: 45,
-            views: 1234,
-            createdAt: '2024-06-16T10:30:00Z',
-            tags: ['AI', 'Productivity', 'Next.js'],
-            image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=400&h=300&fit=crop',
-            isFeatured: true
+            title: 'Building AI-Powered Apps with FragmentsPro',
+            content: 'Just finished building an amazing AI-powered e-commerce platform using FragmentsPro! The AI suggestions were incredibly helpful in optimizing the user experience. Here are some key insights I learned...',
+            category: 'tutorial',
+            tags: ['ai', 'e-commerce', 'tutorial', 'nextjs'],
+            likes: 156,
+            comments: 23,
+            shares: 12,
+            views: 892,
+            createdAt: '2024-06-15T10:30:00Z',
+            isLiked: true,
+            isBookmarked: false,
+            project: {
+                id: 'proj1',
+                name: 'AI E-commerce Platform',
+                description: 'Modern e-commerce solution with AI recommendations',
+                preview: '/projects/ai-ecommerce.jpg',
+                techStack: ['react', 'nextjs', 'openai', 'stripe'],
+                liveUrl: 'https://ai-ecommerce.demo.com',
+                githubUrl: 'https://github.com/sarah/ai-ecommerce'
+            }
         },
         {
             id: '2',
-            title: 'Real-time Weather Dashboard',
-            description: 'Beautiful weather dashboard with interactive charts and multiple city support',
             author: {
-                name: 'Mike Johnson',
-                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-                level: 'intermediate'
+                id: 'user2',
+                name: 'Alex Rodriguez',
+                avatar: '/avatars/alex.jpg',
+                level: 'intermediate',
+                badges: ['Rising Star', 'Data Enthusiast'],
+                followers: 456,
+                projects: 8
             },
-            template: 'React',
-            votes: 189,
-            comments: 32,
-            views: 987,
-            createdAt: '2024-06-16T09:15:00Z',
-            tags: ['Data Science', 'Streamlit', 'API'],
-            image: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=400&h=300&fit=crop'
+            title: 'Data Visualization Dashboard Tutorial',
+            content: 'Created a comprehensive guide on building interactive dashboards with FragmentsPro. The real-time collaboration features made it so easy to work with my team remotely...',
+            category: 'guide',
+            tags: ['data-viz', 'dashboard', 'tutorial', 'collaboration'],
+            likes: 89,
+            comments: 15,
+            shares: 8,
+            views: 445,
+            createdAt: '2024-06-14T15:45:00Z',
+            isLiked: false,
+            isBookmarked: true,
+            attachments: [
+                {
+                    type: 'image',
+                    url: '/uploads/dashboard-preview.png',
+                    name: 'Dashboard Preview'
+                }
+            ]
         },
         {
             id: '3',
-            title: 'E-commerce Analytics Platform',
-            description: 'Comprehensive analytics dashboard for e-commerce businesses with real-time insights',
             author: {
-                name: 'Alex Rodriguez',
-                avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-                level: 'expert'
+                id: 'user3',
+                name: 'Emma Thompson',
+                avatar: '/avatars/emma.jpg',
+                level: 'beginner',
+                badges: ['Newcomer', 'Quick Learner'],
+                followers: 123,
+                projects: 3
             },
-            template: 'Vue.js',
-            votes: 156,
-            comments: 28,
-            views: 756,
-            createdAt: '2024-06-16T08:45:00Z',
-            tags: ['Analytics', 'Vue.js', 'Business'],
-            image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop'
+            title: 'My First AI Chatbot Project',
+            content: 'As a beginner, I was amazed by how easy it was to create an AI chatbot using FragmentsPro! The step-by-step guidance and AI suggestions helped me understand complex concepts...',
+            category: 'showcase',
+            tags: ['ai', 'chatbot', 'beginner', 'showcase'],
+            likes: 67,
+            comments: 12,
+            shares: 5,
+            views: 234,
+            createdAt: '2024-06-13T09:15:00Z',
+            isLiked: true,
+            isBookmarked: false
         }
     ])
 
-    const [challenges, setChallenges] = useState<Challenge[]>([
+    const [events, setEvents] = useState<CommunityEvent[]>([
         {
             id: '1',
-            title: 'AI Integration Challenge',
-            description: 'Build an app that seamlessly integrates AI features for enhanced user experience',
-            prize: '$500 + Premium Credits',
-            participants: 156,
-            deadline: '2024-07-15T23:59:59Z',
-            status: 'active',
-            category: 'AI/ML',
-            difficulty: 'intermediate'
+            title: 'AI App Development Workshop',
+            description: 'Learn how to build AI-powered applications using FragmentsPro. Hands-on workshop with real-world examples.',
+            date: '2024-06-25',
+            time: '14:00-17:00',
+            location: 'Virtual',
+            type: 'workshop',
+            attendees: 45,
+            maxAttendees: 50,
+            organizer: {
+                name: 'FragmentsPro Team',
+                avatar: '/avatars/team.jpg'
+            },
+            tags: ['ai', 'workshop', 'hands-on'],
+            isRegistered: true
         },
         {
             id: '2',
-            title: 'Mobile-First Design',
-            description: 'Create a responsive app with exceptional mobile user experience',
-            prize: '$300 + Pro Credits',
-            participants: 89,
-            deadline: '2024-07-20T23:59:59Z',
-            status: 'active',
-            category: 'UI/UX',
-            difficulty: 'beginner'
-        },
-        {
-            id: '3',
-            title: 'Real-time Collaboration',
-            description: 'Build an app that enables real-time collaboration between multiple users',
-            prize: '$750 + Enterprise Credits',
-            participants: 67,
-            deadline: '2024-08-01T23:59:59Z',
-            status: 'upcoming',
-            category: 'Real-time',
-            difficulty: 'advanced'
+            title: 'Community Hackathon 2024',
+            description: '24-hour hackathon to build innovative applications using FragmentsPro. Prizes for the best projects!',
+            date: '2024-07-15',
+            time: '09:00-09:00',
+            location: 'Hybrid (Virtual + San Francisco)',
+            type: 'hackathon',
+            attendees: 89,
+            maxAttendees: 100,
+            organizer: {
+                name: 'Community Leaders',
+                avatar: '/avatars/community.jpg'
+            },
+            tags: ['hackathon', 'innovation', 'prizes'],
+            isRegistered: false
         }
     ])
 
-    const handleVote = (appId: string) => {
-        setCommunityApps(apps =>
-            apps.map(app =>
-                app.id === appId
-                    ? { ...app, votes: app.isVoted ? app.votes - 1 : app.votes + 1, isVoted: !app.isVoted }
-                    : app
-            )
-        )
+    const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([
+        {
+            id: 'user1',
+            name: 'Sarah Chen',
+            avatar: '/avatars/sarah.jpg',
+            rank: 1,
+            points: 2847,
+            level: 'Expert',
+            achievements: ['Top Contributor', 'AI Expert', 'Community Leader'],
+            projects: 23,
+            contributions: 156,
+            streak: 45
+        },
+        {
+            id: 'user4',
+            name: 'Michael Park',
+            avatar: '/avatars/michael.jpg',
+            rank: 2,
+            points: 2156,
+            level: 'Expert',
+            achievements: ['Code Master', 'Mentor'],
+            projects: 18,
+            contributions: 134,
+            streak: 32
+        },
+        {
+            id: 'user2',
+            name: 'Alex Rodriguez',
+            avatar: '/avatars/alex.jpg',
+            rank: 3,
+            points: 1892,
+            level: 'Intermediate',
+            achievements: ['Rising Star', 'Data Enthusiast'],
+            projects: 8,
+            contributions: 89,
+            streak: 28
+        }
+    ])
+
+    const categories = [
+        { id: 'all', name: 'All Posts', icon: MessageCircle },
+        { id: 'tutorial', name: 'Tutorials', icon: BookOpen },
+        { id: 'showcase', name: 'Showcase', icon: Star },
+        { id: 'guide', name: 'Guides', icon: BookOpen },
+        { id: 'question', name: 'Questions', icon: HelpCircle },
+        { id: 'news', name: 'News', icon: Newspaper }
+    ]
+
+    const handleLikePost = (postId: string) => {
+        setPosts(prev => prev.map(post =>
+            post.id === postId
+                ? { ...post, isLiked: !post.isLiked, likes: post.isLiked ? post.likes - 1 : post.likes + 1 }
+                : post
+        ))
+    }
+
+    const handleBookmarkPost = (postId: string) => {
+        setPosts(prev => prev.map(post =>
+            post.id === postId
+                ? { ...post, isBookmarked: !post.isBookmarked }
+                : post
+        ))
+    }
+
+    const handleRegisterEvent = (eventId: string) => {
+        setEvents(prev => prev.map(event =>
+            event.id === eventId
+                ? { ...event, isRegistered: !event.isRegistered, attendees: event.isRegistered ? event.attendees - 1 : event.attendees + 1 }
+                : event
+        ))
     }
 
     const getLevelColor = (level: string) => {
         switch (level) {
-            case 'expert': return 'text-purple-400 bg-purple-500/20'
-            case 'intermediate': return 'text-yellow-400 bg-yellow-500/20'
-            case 'beginner': return 'text-green-400 bg-green-500/20'
-            default: return 'text-gray-400 bg-gray-500/20'
+            case 'expert': return 'text-error bg-error/20'
+            case 'intermediate': return 'text-warning bg-warning/20'
+            case 'beginner': return 'text-success bg-success/20'
+            default: return 'text-muted-foreground bg-muted/20'
         }
     }
 
-    const getDifficultyColor = (difficulty: string) => {
-        switch (difficulty) {
-            case 'beginner': return 'text-green-400 bg-green-500/20'
-            case 'intermediate': return 'text-yellow-400 bg-yellow-500/20'
-            case 'advanced': return 'text-red-400 bg-red-500/20'
-            default: return 'text-gray-400 bg-gray-500/20'
-        }
-    }
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'active': return 'text-green-400 bg-green-500/20'
-            case 'upcoming': return 'text-blue-400 bg-blue-500/20'
-            case 'completed': return 'text-gray-400 bg-gray-500/20'
-            default: return 'text-gray-400 bg-gray-500/20'
+    const getEventTypeColor = (type: string) => {
+        switch (type) {
+            case 'workshop': return 'text-primary bg-primary/20'
+            case 'hackathon': return 'text-success bg-success/20'
+            case 'meetup': return 'text-warning bg-warning/20'
+            case 'webinar': return 'text-secondary bg-secondary/20'
+            default: return 'text-muted-foreground bg-muted/20'
         }
     }
 
@@ -175,257 +311,303 @@ export function CommunityFeatures() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-white">Community Hub</h2>
-                    <p className="text-gray-400">Share, discover, and collaborate with developers worldwide</p>
+                    <h2 className="m3-headline-medium font-bold text-foreground">Community</h2>
+                    <p className="m3-body-large text-muted-foreground">Connect, learn, and grow with fellow developers</p>
                 </div>
 
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors flex items-center gap-2"
-                >
-                    <Share2 className="w-4 h-4" />
-                    Share Your App
-                </motion.button>
+                <div className="flex items-center gap-4">
+                    <M3Button
+                        variant="filled"
+                        size="sm"
+                        onClick={() => setShowCreatePost(true)}
+                        className="flex items-center gap-2"
+                    >
+                        <Plus className="w-4 h-4" />
+                        Create Post
+                    </M3Button>
+
+                    <M3Button
+                        variant="outlined"
+                        size="sm"
+                        className="flex items-center gap-2"
+                    >
+                        <UserPlus className="w-4 h-4" />
+                        Invite Friends
+                    </M3Button>
+                </div>
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex items-center gap-1 bg-gray-800 rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-surface-container rounded-lg p-1">
                 {[
-                    { id: 'showcase', label: 'App Showcase', icon: Star },
-                    { id: 'challenges', label: 'Challenges', icon: Trophy },
-                    { id: 'leaderboard', label: 'Leaderboard', icon: TrendingUp }
-                ].map((tab) => (
-                    <motion.button
+                    { id: 'feed', label: 'Feed', icon: MessageCircle },
+                    { id: 'events', label: 'Events', icon: Calendar },
+                    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
+                    { id: 'projects', label: 'Projects', icon: Code }
+                ].map(tab => (
+                    <button
                         key={tab.id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setSelectedTab(tab.id as any)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedTab === tab.id
-                                ? 'bg-blue-600 text-white'
-                                : 'text-gray-400 hover:text-white'
+                        onClick={() => setActiveTab(tab.id as any)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab.id
+                                ? 'bg-primary text-primary-foreground'
+                                : 'text-muted-foreground hover:text-foreground'
                             }`}
                     >
                         <tab.icon className="w-4 h-4" />
                         {tab.label}
-                    </motion.button>
+                    </button>
                 ))}
             </div>
 
-            {/* Content */}
+            {/* Search and Filters */}
+            <div className="flex items-center gap-4">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <input
+                        type="text"
+                        placeholder="Search community..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 bg-surface-container border border-outline rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                </div>
+
+                {activeTab === 'feed' && (
+                    <>
+                        <select
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            className="px-3 py-2 bg-surface-container border border-outline rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                            {categories.map(category => (
+                                <option key={category.id} value={category.id}>{category.name}</option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as any)}
+                            className="px-3 py-2 bg-surface-container border border-outline rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                            <option value="recent">Most Recent</option>
+                            <option value="popular">Most Popular</option>
+                            <option value="trending">Trending</option>
+                        </select>
+                    </>
+                )}
+            </div>
+
+            {/* Content Area */}
             <AnimatePresence mode="wait">
-                {selectedTab === 'showcase' && (
+                {activeTab === 'feed' && (
                     <motion.div
-                        key="showcase"
+                        key="feed"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         className="space-y-6"
                     >
-                        {/* Sort Controls */}
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <span className="text-gray-400 text-sm">Sort by:</span>
-                                <div className="flex gap-2">
-                                    {[
-                                        { id: 'popular', label: 'Most Popular' },
-                                        { id: 'recent', label: 'Recently Added' },
-                                        { id: 'trending', label: 'Trending' }
-                                    ].map((option) => (
-                                        <button
-                                            key={option.id}
-                                            onClick={() => setSortBy(option.id as any)}
-                                            className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${sortBy === option.id
-                                                    ? 'bg-blue-600 text-white'
-                                                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                                                }`}
-                                        >
-                                            {option.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* App Grid */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {communityApps.map((app, index) => (
-                                <motion.div
-                                    key={app.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1 }}
-                                    className={`bg-gray-900 rounded-xl border overflow-hidden hover:border-blue-500/30 transition-all duration-300 ${app.isFeatured ? 'border-blue-500/50' : 'border-gray-700'
-                                        }`}
-                                >
-                                    {/* Featured Badge */}
-                                    {app.isFeatured && (
-                                        <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium z-10">
-                                            Featured
-                                        </div>
-                                    )}
-
-                                    {/* App Image */}
-                                    <div className="relative h-48 bg-gray-800">
-                                        <img
-                                            src={app.image}
-                                            alt={app.title}
-                                            className="w-full h-full object-cover"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                                    </div>
-
-                                    {/* App Content */}
-                                    <div className="p-6">
-                                        {/* Author Info */}
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <img
-                                                src={app.author.avatar}
-                                                alt={app.author.name}
-                                                className="w-10 h-10 rounded-full"
-                                            />
+                        {posts.map((post, index) => (
+                            <motion.div
+                                key={post.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                            >
+                                <M3Card variant="elevated">
+                                    <M3CardHeader>
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-semibold">
+                                                {post.author.name.charAt(0)}
+                                            </div>
                                             <div className="flex-1">
-                                                <h4 className="text-white font-medium">{app.author.name}</h4>
-                                                <span className={`px-2 py-1 rounded text-xs font-medium ${getLevelColor(app.author.level)}`}>
-                                                    {app.author.level}
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <h3 className="m3-title-medium font-semibold text-foreground">{post.author.name}</h3>
+                                                    <span className={`px-2 py-1 rounded text-xs font-medium ${getLevelColor(post.author.level)}`}>
+                                                        {post.author.level}
+                                                    </span>
+                                                    {post.author.badges.slice(0, 1).map(badge => (
+                                                        <span key={badge} className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">
+                                                            {badge}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                                    <span>{post.author.followers} followers</span>
+                                                    <span>{post.author.projects} projects</span>
+                                                    <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                                                </div>
+                                            </div>
+                                            <button className="p-2 hover:bg-surface-container rounded-lg">
+                                                <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
+                                            </button>
+                                        </div>
+                                    </M3CardHeader>
+                                    <M3CardContent className="space-y-4">
+                                        <h4 className="m3-title-large font-semibold text-foreground">{post.title}</h4>
+                                        <p className="m3-body-medium text-muted-foreground">{post.content}</p>
+
+                                        {/* Tags */}
+                                        <div className="flex flex-wrap gap-2">
+                                            {post.tags.map(tag => (
+                                                <span key={tag} className="px-2 py-1 bg-surface-container text-xs rounded-full text-muted-foreground">
+                                                    #{tag}
                                                 </span>
+                                            ))}
+                                        </div>
+
+                                        {/* Project Preview */}
+                                        {post.project && (
+                                            <div className="p-4 bg-surface-container rounded-lg border border-outline">
+                                                <div className="flex items-center gap-3 mb-3">
+                                                    <Code className="w-5 h-5 text-primary" />
+                                                    <h5 className="m3-title-medium font-semibold text-foreground">{post.project.name}</h5>
+                                                </div>
+                                                <p className="m3-body-small text-muted-foreground mb-3">{post.project.description}</p>
+                                                <div className="flex items-center gap-2">
+                                                    {post.project.techStack.slice(0, 3).map(tech => (
+                                                        <span key={tech} className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">
+                                                            {tech}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Attachments */}
+                                        {post.attachments && post.attachments.length > 0 && (
+                                            <div className="space-y-2">
+                                                {post.attachments.map(attachment => (
+                                                    <div key={attachment.name} className="p-3 bg-surface-container rounded-lg border border-outline">
+                                                        <div className="flex items-center gap-2">
+                                                            <Download className="w-4 h-4 text-muted-foreground" />
+                                                            <span className="m3-body-small text-foreground">{attachment.name}</span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* Actions */}
+                                        <div className="flex items-center justify-between pt-4 border-t border-outline">
+                                            <div className="flex items-center gap-6">
+                                                <button
+                                                    onClick={() => handleLikePost(post.id)}
+                                                    className={`flex items-center gap-2 text-sm transition-colors ${post.isLiked ? 'text-error' : 'text-muted-foreground hover:text-foreground'
+                                                        }`}
+                                                >
+                                                    <Heart className={`w-4 h-4 ${post.isLiked ? 'fill-current' : ''}`} />
+                                                    {post.likes}
+                                                </button>
+                                                <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                                                    <MessageSquare className="w-4 h-4" />
+                                                    {post.comments}
+                                                </button>
+                                                <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                                                    <Share2 className="w-4 h-4" />
+                                                    {post.shares}
+                                                </button>
+                                                <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                                                    <Eye className="w-4 h-4" />
+                                                    {post.views}
+                                                </button>
+                                            </div>
+                                            <button
+                                                onClick={() => handleBookmarkPost(post.id)}
+                                                className={`p-2 rounded-lg transition-colors ${post.isBookmarked
+                                                        ? 'text-primary bg-primary/10'
+                                                        : 'text-muted-foreground hover:bg-surface-container'
+                                                    }`}
+                                            >
+                                                <Bookmark className={`w-4 h-4 ${post.isBookmarked ? 'fill-current' : ''}`} />
+                                            </button>
+                                        </div>
+                                    </M3CardContent>
+                                </M3Card>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                )}
+
+                {activeTab === 'events' && (
+                    <motion.div
+                        key="events"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="space-y-6"
+                    >
+                        {events.map((event, index) => (
+                            <motion.div
+                                key={event.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                            >
+                                <M3Card variant="elevated">
+                                    <M3CardHeader>
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className={`px-2 py-1 rounded text-xs font-medium ${getEventTypeColor(event.type)}`}>
+                                                        {event.type}
+                                                    </span>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {event.attendees}/{event.maxAttendees} attendees
+                                                    </span>
+                                                </div>
+                                                <M3CardTitle>{event.title}</M3CardTitle>
+                                                <p className="m3-body-medium text-muted-foreground mt-2">{event.description}</p>
+                                            </div>
+                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-semibold">
+                                                {event.organizer.name.charAt(0)}
+                                            </div>
+                                        </div>
+                                    </M3CardHeader>
+                                    <M3CardContent className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <div className="flex items-center gap-2">
+                                                <Calendar className="w-4 h-4 text-muted-foreground" />
+                                                <span className="text-foreground">{event.date}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Clock className="w-4 h-4 text-muted-foreground" />
+                                                <span className="text-foreground">{event.time}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <MapPin className="w-4 h-4 text-muted-foreground" />
+                                                <span className="text-foreground">{event.location}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Users2 className="w-4 h-4 text-muted-foreground" />
+                                                <span className="text-foreground">{event.organizer.name}</span>
                                             </div>
                                         </div>
 
-                                        {/* App Details */}
-                                        <h3 className="text-lg font-semibold text-white mb-2">{app.title}</h3>
-                                        <p className="text-gray-400 text-sm mb-4">{app.description}</p>
-
-                                        {/* Tags */}
-                                        <div className="flex flex-wrap gap-2 mb-4">
-                                            {app.tags.map((tag) => (
-                                                <span
-                                                    key={tag}
-                                                    className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded-md"
-                                                >
+                                        <div className="flex flex-wrap gap-2">
+                                            {event.tags.map(tag => (
+                                                <span key={tag} className="px-2 py-1 bg-surface-container text-xs rounded-full text-muted-foreground">
                                                     {tag}
                                                 </span>
                                             ))}
                                         </div>
 
-                                        {/* Stats */}
-                                        <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
-                                            <span className="flex items-center gap-1">
-                                                <Eye className="w-4 h-4" />
-                                                {app.views}
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                                <MessageCircle className="w-4 h-4" />
-                                                {app.comments}
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                                <Calendar className="w-4 h-4" />
-                                                {new Date(app.createdAt).toLocaleDateString()}
-                                            </span>
-                                        </div>
-
-                                        {/* Actions */}
-                                        <div className="flex items-center gap-2">
-                                            <motion.button
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() => handleVote(app.id)}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${app.isVoted
-                                                        ? 'bg-red-600 hover:bg-red-700 text-white'
-                                                        : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-                                                    }`}
-                                            >
-                                                <Heart className={`w-4 h-4 ${app.isVoted ? 'fill-current' : ''}`} />
-                                                {app.votes}
-                                            </motion.button>
-
-                                            <motion.button
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
-                                            >
-                                                View App
-                                            </motion.button>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
+                                        <M3Button
+                                            variant={event.isRegistered ? "outlined" : "filled"}
+                                            size="sm"
+                                            onClick={() => handleRegisterEvent(event.id)}
+                                            className="w-full"
+                                        >
+                                            {event.isRegistered ? 'Registered' : 'Register Now'}
+                                        </M3Button>
+                                    </M3CardContent>
+                                </M3Card>
+                            </motion.div>
+                        ))}
                     </motion.div>
                 )}
 
-                {selectedTab === 'challenges' && (
-                    <motion.div
-                        key="challenges"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="space-y-6"
-                    >
-                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {challenges.map((challenge, index) => (
-                                <motion.div
-                                    key={challenge.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1 }}
-                                    className="bg-gray-900 rounded-xl p-6 border border-gray-700 hover:border-blue-500/30 transition-all duration-300"
-                                >
-                                    {/* Challenge Header */}
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-white mb-2">{challenge.title}</h3>
-                                            <p className="text-gray-400 text-sm">{challenge.description}</p>
-                                        </div>
-                                        <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(challenge.status)}`}>
-                                            {challenge.status}
-                                        </span>
-                                    </div>
-
-                                    {/* Challenge Details */}
-                                    <div className="space-y-3 mb-6">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-gray-400 text-sm">Prize</span>
-                                            <span className="text-yellow-400 font-medium">{challenge.prize}</span>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-gray-400 text-sm">Participants</span>
-                                            <span className="text-white font-medium">{challenge.participants}</span>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-gray-400 text-sm">Deadline</span>
-                                            <span className="text-white font-medium">
-                                                {new Date(challenge.deadline).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Tags */}
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <span className={`px-2 py-1 rounded text-xs font-medium ${getDifficultyColor(challenge.difficulty)}`}>
-                                            {challenge.difficulty}
-                                        </span>
-                                        <span className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded-md">
-                                            {challenge.category}
-                                        </span>
-                                    </div>
-
-                                    {/* Action */}
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
-                                    >
-                                        <Trophy className="w-4 h-4" />
-                                        Join Challenge
-                                    </motion.button>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
-                )}
-
-                {selectedTab === 'leaderboard' && (
+                {activeTab === 'leaderboard' && (
                     <motion.div
                         key="leaderboard"
                         initial={{ opacity: 0, y: 20 }}
@@ -433,53 +615,71 @@ export function CommunityFeatures() {
                         exit={{ opacity: 0, y: -20 }}
                         className="space-y-6"
                     >
-                        <div className="bg-gray-900 rounded-xl p-6 border border-gray-700">
-                            <h3 className="text-lg font-semibold text-white mb-6">Top Contributors</h3>
-
-                            <div className="space-y-4">
-                                {[
-                                    { rank: 1, name: 'Sarah Chen', points: 2847, apps: 23, level: 'expert' },
-                                    { rank: 2, name: 'Mike Johnson', points: 2156, apps: 18, level: 'intermediate' },
-                                    { rank: 3, name: 'Alex Rodriguez', points: 1987, apps: 15, level: 'expert' },
-                                    { rank: 4, name: 'Emma Wilson', points: 1654, apps: 12, level: 'intermediate' },
-                                    { rank: 5, name: 'David Kim', points: 1432, apps: 10, level: 'beginner' }
-                                ].map((user, index) => (
-                                    <motion.div
-                                        key={user.name}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: index * 0.1 }}
-                                        className="flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-750 transition-colors"
-                                    >
+                        {leaderboard.map((user, index) => (
+                            <motion.div
+                                key={user.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                            >
+                                <M3Card variant="elevated">
+                                    <M3CardContent className="p-6">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-8 h-8 flex items-center justify-center">
-                                                {index < 3 ? (
-                                                    <Award className={`w-6 h-6 ${index === 0 ? 'text-yellow-400' : index === 1 ? 'text-gray-400' : 'text-orange-600'}`} />
-                                                ) : (
-                                                    <span className="text-gray-400 font-medium">{user.rank}</span>
+                                            <div className="relative">
+                                                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg">
+                                                    {user.name.charAt(0)}
+                                                </div>
+                                                {user.rank <= 3 && (
+                                                    <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-warning flex items-center justify-center">
+                                                        <Trophy className="w-4 h-4 text-warning-foreground" />
+                                                    </div>
                                                 )}
                                             </div>
-                                            <div>
-                                                <h4 className="text-white font-medium">{user.name}</h4>
-                                                <span className={`px-2 py-1 rounded text-xs font-medium ${getLevelColor(user.level)}`}>
-                                                    {user.level}
-                                                </span>
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <h3 className="m3-title-large font-semibold text-foreground">{user.name}</h3>
+                                                    <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">
+                                                        {user.level}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                                                    <span>{user.points} points</span>
+                                                    <span>{user.projects} projects</span>
+                                                    <span>{user.contributions} contributions</span>
+                                                    <span>{user.streak} day streak</span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {user.achievements.slice(0, 2).map(achievement => (
+                                                        <span key={achievement} className="px-2 py-1 bg-success/10 text-success text-xs rounded">
+                                                            {achievement}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-2xl font-bold text-foreground">#{user.rank}</div>
+                                                <div className="text-sm text-muted-foreground">Rank</div>
                                             </div>
                                         </div>
+                                    </M3CardContent>
+                                </M3Card>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                )}
 
-                                        <div className="flex-1 flex items-center justify-end gap-6">
-                                            <div className="text-center">
-                                                <div className="text-lg font-bold text-white">{user.points}</div>
-                                                <div className="text-xs text-gray-400">Points</div>
-                                            </div>
-                                            <div className="text-center">
-                                                <div className="text-lg font-bold text-blue-400">{user.apps}</div>
-                                                <div className="text-xs text-gray-400">Apps</div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
+                {activeTab === 'projects' && (
+                    <motion.div
+                        key="projects"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="space-y-6"
+                    >
+                        <div className="text-center py-12">
+                            <Code className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                            <h3 className="m3-headline-small font-semibold text-foreground mb-2">Community Projects</h3>
+                            <p className="m3-body-medium text-muted-foreground">Discover amazing projects built by the community</p>
                         </div>
                     </motion.div>
                 )}
