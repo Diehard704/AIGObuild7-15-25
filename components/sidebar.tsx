@@ -11,7 +11,8 @@ import {
     HelpCircle,
     Zap,
     Rocket,
-    Sparkles
+    Sparkles,
+    Code
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
@@ -45,6 +46,12 @@ const navigationItems = [
         href: '/community',
         icon: Users,
         description: 'Connect with developers'
+    },
+    {
+        name: 'Code Editor',
+        href: '/code-editor-demo',
+        icon: Code,
+        description: 'Enhanced editor demo'
     }
 ]
 
@@ -112,8 +119,8 @@ export function Sidebar() {
                                     whileHover={{ x: 4, scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     className={`m3-ripple group relative flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                                            ? 'bg-primary text-primary-foreground shadow-lg'
-                                            : 'text-foreground hover:bg-surface-container-high hover:text-primary'
+                                        ? 'bg-primary text-primary-foreground shadow-lg'
+                                        : 'text-foreground hover:bg-surface-container-high hover:text-primary'
                                         }`}
                                 >
                                     <Icon className="w-5 h-5" />
