@@ -24,14 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <PostHogProvider>
-        <body className={inter.className}>
+        <body className={`${inter.className} bg-background text-foreground antialiased`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex min-h-screen">
+            <div className="flex min-h-screen bg-background">
               <Sidebar />
               <div className="flex-1 flex flex-col ml-64 min-h-screen bg-background">
                 <Navigation />

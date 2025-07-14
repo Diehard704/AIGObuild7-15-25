@@ -2,6 +2,138 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Material Design 3 CSS Variables */
+:root {
+  /* Material You Dynamic Colors */
+  --md-sys-color-primary: #6750A4;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: #EADDFF;
+  --md-sys-color-on-primary-container: #21005D;
+  --md-sys-color-secondary: #625B71;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-secondary-container: #E8DEF8;
+  --md-sys-color-on-secondary-container: #1D192B;
+  --md-sys-color-tertiary: #7D5260;
+  --md-sys-color-on-tertiary: #FFFFFF;
+  --md-sys-color-tertiary-container: #FFD8E4;
+  --md-sys-color-on-tertiary-container: #31111D;
+  --md-sys-color-error: #BA1A1A;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-error-container: #FFDAD6;
+  --md-sys-color-on-error-container: #410002;
+  --md-sys-color-background: #FFFBFE;
+  --md-sys-color-on-background: #1C1B1F;
+  --md-sys-color-surface: #FFFBFE;
+  --md-sys-color-on-surface: #1C1B1F;
+  --md-sys-color-surface-variant: #E7E0EC;
+  --md-sys-color-on-surface-variant: #49454F;
+  --md-sys-color-outline: #79747E;
+  --md-sys-color-outline-variant: #CAC4D0;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-inverse-surface: #313033;
+  --md-sys-color-on-inverse-surface: #F4EFF4;
+  --md-sys-color-inverse-primary: #D0BCFF;
+  --md-sys-color-surface-tint: #6750A4;
+  --md-sys-color-surface-container-lowest: #FFFFFF;
+  --md-sys-color-surface-container-low: #F7F2FA;
+  --md-sys-color-surface-container: #F3EDF7;
+  --md-sys-color-surface-container-high: #ECE6F0;
+  --md-sys-color-surface-container-highest: #E6E0E9;
+
+  /* Material 3 Elevation */
+  --md-sys-elevation-level0: 0px;
+  --md-sys-elevation-level1: 1px;
+  --md-sys-elevation-level2: 3px;
+  --md-sys-elevation-level3: 6px;
+  --md-sys-elevation-level4: 8px;
+  --md-sys-elevation-level5: 12px;
+
+  /* Material 3 Corner Radius */
+  --md-sys-corner-radius-none: 0px;
+  --md-sys-corner-radius-extra-small: 4px;
+  --md-sys-corner-radius-small: 8px;
+  --md-sys-corner-radius-medium: 12px;
+  --md-sys-corner-radius-large: 16px;
+  --md-sys-corner-radius-extra-large: 28px;
+  --md-sys-corner-radius-full: 9999px;
+
+  /* Material 3 Spacing */
+  --md-sys-spacing-0: 0px;
+  --md-sys-spacing-1: 4px;
+  --md-sys-spacing-2: 8px;
+  --md-sys-spacing-3: 12px;
+  --md-sys-spacing-4: 16px;
+  --md-sys-spacing-5: 20px;
+  --md-sys-spacing-6: 24px;
+  --md-sys-spacing-7: 28px;
+  --md-sys-spacing-8: 32px;
+  --md-sys-spacing-9: 36px;
+  --md-sys-spacing-10: 40px;
+
+  /* Material 3 Animation */
+  --md-sys-motion-easing-linear: linear;
+  --md-sys-motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+  --md-sys-motion-duration-short1: 100ms;
+  --md-sys-motion-duration-short2: 200ms;
+  --md-sys-motion-duration-short3: 250ms;
+  --md-sys-motion-duration-short4: 300ms;
+  --md-sys-motion-duration-medium1: 400ms;
+  --md-sys-motion-duration-medium2: 500ms;
+  --md-sys-motion-duration-medium3: 600ms;
+  --md-sys-motion-duration-medium4: 700ms;
+  --md-sys-motion-duration-long1: 900ms;
+  --md-sys-motion-duration-long2: 1000ms;
+  --md-sys-motion-duration-long3: 1100ms;
+  --md-sys-motion-duration-long4: 1200ms;
+  --md-sys-motion-duration-extra-long1: 1800ms;
+  --md-sys-motion-duration-extra-long2: 2000ms;
+  --md-sys-motion-duration-extra-long3: 2200ms;
+  --md-sys-motion-duration-extra-long4: 2400ms;
+}
+
+.dark {
+  --md-sys-color-primary: #D0BCFF;
+  --md-sys-color-on-primary: #381E72;
+  --md-sys-color-primary-container: #4F378B;
+  --md-sys-color-on-primary-container: #EADDFF;
+  --md-sys-color-secondary: #CCC2DC;
+  --md-sys-color-on-secondary: #332D41;
+  --md-sys-color-secondary-container: #4A4458;
+  --md-sys-color-on-secondary-container: #E8DEF8;
+  --md-sys-color-tertiary: #EFB8C8;
+  --md-sys-color-on-tertiary: #492532;
+  --md-sys-color-tertiary-container: #633B48;
+  --md-sys-color-on-tertiary-container: #FFD8E4;
+  --md-sys-color-error: #FFB4AB;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000A;
+  --md-sys-color-on-error-container: #FFDAD6;
+  --md-sys-color-background: #1C1B1F;
+  --md-sys-color-on-background: #E6E1E5;
+  --md-sys-color-surface: #1C1B1F;
+  --md-sys-color-on-surface: #E6E1E5;
+  --md-sys-color-surface-variant: #49454F;
+  --md-sys-color-on-surface-variant: #CAC4D0;
+  --md-sys-color-outline: #938F99;
+  --md-sys-color-outline-variant: #49454F;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-inverse-surface: #E6E1E5;
+  --md-sys-color-on-inverse-surface: #313033;
+  --md-sys-color-inverse-primary: #6750A4;
+  --md-sys-color-surface-tint: #D0BCFF;
+  --md-sys-color-surface-container-lowest: #0F0F0F;
+  --md-sys-color-surface-container-low: #1C1B1F;
+  --md-sys-color-surface-container: #211F23;
+  --md-sys-color-surface-container-high: #2B2930;
+  --md-sys-color-surface-container-highest: #36343B;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -66,6 +198,229 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Material Design 3 Utilities */
+@layer components {
+
+  /* M3 Button Variants */
+  .m3-button-elevated {
+    background-color: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-on-surface);
+    box-shadow: 0 var(--md-sys-elevation-level1) 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0px rgba(0, 0, 0, 0.3);
+    border-radius: var(--md-sys-corner-radius-medium);
+    transition: all var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+  }
+
+  .m3-button-elevated:hover {
+    box-shadow: 0 var(--md-sys-elevation-level2) 6px 2px rgba(0, 0, 0, 0.15), 0 3px 6px 0px rgba(0, 0, 0, 0.3);
+  }
+
+  .m3-button-filled {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border-radius: var(--md-sys-corner-radius-medium);
+    transition: all var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+  }
+
+  .m3-button-filled:hover {
+    box-shadow: 0 var(--md-sys-elevation-level1) 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0px rgba(0, 0, 0, 0.3);
+  }
+
+  .m3-button-tonal {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border-radius: var(--md-sys-corner-radius-medium);
+    transition: all var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+  }
+
+  .m3-button-outlined {
+    background-color: transparent;
+    color: var(--md-sys-color-primary);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-corner-radius-medium);
+    transition: all var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+  }
+
+  .m3-button-text {
+    background-color: transparent;
+    color: var(--md-sys-color-primary);
+    border-radius: var(--md-sys-corner-radius-medium);
+    transition: all var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+  }
+
+  /* M3 Card Variants */
+  .m3-card-elevated {
+    background-color: var(--md-sys-color-surface);
+    box-shadow: 0 var(--md-sys-elevation-level1) 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0px rgba(0, 0, 0, 0.3);
+    border-radius: var(--md-sys-corner-radius-medium);
+  }
+
+  .m3-card-filled {
+    background-color: var(--md-sys-color-surface-container-highest);
+    border-radius: var(--md-sys-corner-radius-medium);
+  }
+
+  .m3-card-outlined {
+    background-color: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-corner-radius-medium);
+  }
+
+  /* M3 Typography */
+  .m3-display-large {
+    font-size: 57px;
+    line-height: 64px;
+    font-weight: 400;
+    letter-spacing: -0.25px;
+  }
+
+  .m3-display-medium {
+    font-size: 45px;
+    line-height: 52px;
+    font-weight: 400;
+    letter-spacing: 0px;
+  }
+
+  .m3-display-small {
+    font-size: 36px;
+    line-height: 44px;
+    font-weight: 400;
+    letter-spacing: 0px;
+  }
+
+  .m3-headline-large {
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 400;
+    letter-spacing: 0px;
+  }
+
+  .m3-headline-medium {
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 400;
+    letter-spacing: 0px;
+  }
+
+  .m3-headline-small {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 400;
+    letter-spacing: 0px;
+  }
+
+  .m3-title-large {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 400;
+    letter-spacing: 0px;
+  }
+
+  .m3-title-medium {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    letter-spacing: 0.15px;
+  }
+
+  .m3-title-small {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+  }
+
+  .m3-body-large {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .m3-body-medium {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    letter-spacing: 0.25px;
+  }
+
+  .m3-body-small {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+  }
+
+  .m3-label-large {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+  }
+
+  .m3-label-medium {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .m3-label-small {
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* M3 Ripple Effect */
+  .m3-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .m3-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .m3-ripple:active::after {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* M3 State Layers */
+  .m3-state-hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .m3-state-focus {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .m3-state-pressed {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .dark .m3-state-hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .dark .m3-state-focus {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .dark .m3-state-pressed {
+    background-color: rgba(255, 255, 255, 0.12);
   }
 }
 
