@@ -1,4 +1,4 @@
-# 🚀 FragmentsPro - AI-Powered App Generation Platform
+# 🚀 aiGo.build - AI-Powered App Generation Platform
 
 **Strategic AI development platform with comprehensive backend infrastructure for building amazing applications.**
 

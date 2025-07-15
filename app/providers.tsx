@@ -2,6 +2,8 @@
 
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { type ThemeProviderProps } from 'next-themes'
+import { SessionProvider } from 'next-auth/react'
+import { Session } from 'next-auth'
 import posthog from 'posthog-js'
 import { PostHogProvider as PostHogProviderJS } from 'posthog-js/react'
 
@@ -25,4 +27,12 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+}
+
+export function AuthProvider({ children, session }: { children: React.ReactNode, session: Session | null }) {
+  return (
+    <SessionProvider session={session}>
+      {children}
+    </SessionProvider>
+  )
 }

@@ -34,7 +34,7 @@ export function Footer() {
                 <span className="text-primary-foreground font-bold text-lg">⚡</span>
               </div>
               <span className="m3-title-large font-bold text-primary">
-                FragmentsPro
+                aiGo.build
               </span>
             </div>
 
@@ -131,7 +131,7 @@ export function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-outline mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="m3-body-small text-muted-foreground">
-            © 2024 FragmentsPro. All rights reserved. Powered by aggressive backend infrastructure.
+            © 2024 aiGo.build. All rights reserved. Powered by aggressive backend infrastructure.
           </p>
 
           <div className="flex items-center space-x-6 mt-4 md:mt-0">

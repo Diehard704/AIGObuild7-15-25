@@ -49,7 +49,7 @@ export default function LandingPage() {
     {
       name: 'Sarah Chen',
       role: 'Full Stack Developer',
-      content: 'FragmentsPro has revolutionized how I build applications. The AI generation is incredibly accurate and the deployment is seamless.',
+      content: 'aiGo.build has revolutionized how I build applications. The AI generation is incredibly accurate and the deployment is seamless.',
       rating: 5,
       avatar: 'SC'
     },
@@ -205,7 +205,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="m3-headline-large font-bold text-foreground mb-4">
-              Why Choose FragmentsPro?
+              Why Choose aiGo.build?
             </h2>
             <p className="m3-body-large text-muted-foreground max-w-2xl mx-auto">
               Experience the future of application development with our comprehensive AI-powered platform.
@@ -258,7 +258,7 @@ export default function LandingPage() {
               What Our Users Say
             </h2>
             <p className="m3-body-large text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of developers who are already building faster with FragmentsPro.
+              Join thousands of developers who are already building faster with aiGo.build.
             </p>
           </div>
 

@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { M3Button } from '@/components/ui/m3-button'
 import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
 import { TypewriterChat } from '@/components/typewriter-chat'
+import { LivePreview } from '@/components/live-preview'
+import { DeepSeekUpsellBot, DeepSeekBotToggle } from '@/components/deepseek-upsell-bot'
 import {
     Sparkles,
     Rocket,
@@ -24,10 +26,11 @@ import {
     TrendingUp,
     Loader2,
     CheckCircle,
-    AlertCircle
+    AlertCircle,
+    Eye
 } from 'lucide-react'
 
-export default function GeneratePage() {
+function GeneratePageContent() {
     const searchParams = useSearchParams()
     const template = searchParams.get('template')
     const prompt = searchParams.get('prompt')
@@ -37,6 +40,7 @@ export default function GeneratePage() {
     const [progress, setProgress] = useState(0)
     const [generatedApp, setGeneratedApp] = useState<any>(null)
     const [error, setError] = useState<string | null>(null)
+    const [showDeepSeekBot, setShowDeepSeekBot] = useState(false)
 
     const templates = {
         'nextjs-developer': {
@@ -259,13 +263,14 @@ export default function GeneratePage() {
                 )}
 
                 {/* Generation Interface */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* Chat Interface */}
                     <motion.section
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
+                        className="lg:col-span-1"
                     >
                         <M3Card variant="elevated" className="h-full">
                             <M3CardHeader>
@@ -276,32 +281,14 @@ export default function GeneratePage() {
                             </M3CardHeader>
                             <M3CardContent className="p-6">
                                 <TypewriterChat onGenerate={handleGenerateApp} isLoading={isGenerating} />
-                            </M3CardContent>
-                        </M3Card>
-                    </motion.section>
-
-                    {/* Generation Status */}
-                    <motion.section
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 }}
-                    >
-                        <M3Card variant="elevated" className="h-full">
-                            <M3CardHeader>
-                                <M3CardTitle className="flex items-center gap-2">
-                                    <Rocket className="w-5 h-5 text-primary" />
-                                    Generation Status
-                                </M3CardTitle>
-                            </M3CardHeader>
-                            <M3CardContent className="p-6">
-
-                                {isGenerating && (
-                                    <div className="space-y-6">
-                                        {/* Progress Bar */}
-                                        <div className="space-y-2">
+                                
+                                {/* Generation Status */}
+                                <div className="mt-6 space-y-4">
+                                    {isGenerating && (
+                                        <div className="space-y-4">
                                             <div className="flex items-center justify-between">
-                                                <span className="m3-body-medium text-foreground">Generating...</span>
-                                                <span className="m3-body-medium text-muted-foreground">{Math.round(progress)}%</span>
+                                                <span className="text-sm text-foreground">Generating...</span>
+                                                <span className="text-sm text-muted-foreground">{Math.round(progress)}%</span>
                                             </div>
                                             <div className="w-full bg-surface-container rounded-full h-2">
                                                 <motion.div
@@ -311,82 +298,54 @@ export default function GeneratePage() {
                                                     transition={{ duration: 0.5 }}
                                                 />
                                             </div>
+                                            <div className="flex items-center gap-3">
+                                                <Loader2 className="w-4 h-4 text-primary animate-spin" />
+                                                <span className="text-sm text-foreground">{generationStep}</span>
+                                            </div>
                                         </div>
+                                    )}
 
-                                        {/* Current Step */}
-                                        <div className="flex items-center gap-3">
-                                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                                            <span className="m3-body-medium text-foreground">{generationStep}</span>
-                                        </div>
-
-                                        {/* Generation Steps */}
+                                    {error && (
                                         <div className="space-y-3">
-                                            {generationSteps.map((step, index) => (
-                                                <div key={step} className="flex items-center gap-3">
-                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${index < Math.floor(progress / (100 / generationSteps.length))
-                                                        ? 'bg-success text-success-foreground'
-                                                        : 'bg-surface-container text-muted-foreground'
-                                                        }`}>
-                                                        {index < Math.floor(progress / (100 / generationSteps.length)) ? (
-                                                            <CheckCircle className="w-4 h-4" />
-                                                        ) : (
-                                                            <div className="w-2 h-2 rounded-full bg-current" />
-                                                        )}
-                                                    </div>
-                                                    <span className={`m3-body-small ${index < Math.floor(progress / (100 / generationSteps.length))
-                                                        ? 'text-foreground'
-                                                        : 'text-muted-foreground'
-                                                        }`}>
-                                                        {step}
-                                                    </span>
-                                                </div>
-                                            ))}
+                                            <div className="flex items-center gap-2 text-error">
+                                                <AlertCircle className="w-4 h-4" />
+                                                <span className="text-sm font-medium">Generation Failed</span>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">{error}</p>
+                                            <M3Button
+                                                variant="filled"
+                                                size="sm"
+                                                onClick={() => setError(null)}
+                                            >
+                                                Try Again
+                                            </M3Button>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                {error && (
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-3 text-error">
-                                            <AlertCircle className="w-5 h-5" />
-                                            <span className="m3-body-medium font-medium">Generation Failed</span>
-                                        </div>
-                                        <p className="m3-body-small text-muted-foreground">{error}</p>
-                                        <M3Button
-                                            variant="filled"
-                                            size="sm"
-                                            onClick={() => setError(null)}
-                                        >
-                                            Try Again
-                                        </M3Button>
-                                    </div>
-                                )}
-
-                                {generatedApp && !isGenerating && (
-                                    <div className="space-y-6">
-                                        <div className="flex items-center gap-3 text-success">
-                                            <CheckCircle className="w-5 h-5" />
-                                            <span className="m3-body-medium font-medium">Generation Complete!</span>
-                                        </div>
-
+                                    {generatedApp && !isGenerating && (
                                         <div className="space-y-4">
-                                            <div>
-                                                <h3 className="m3-title-medium font-semibold text-foreground mb-2">
+                                            <div className="flex items-center gap-2 text-success">
+                                                <CheckCircle className="w-4 h-4" />
+                                                <span className="text-sm font-medium">App Generated!</span>
+                                            </div>
+                                            
+                                            <div className="space-y-2">
+                                                <h3 className="font-semibold text-foreground">
                                                     {generatedApp.name}
                                                 </h3>
-                                                <p className="m3-body-small text-muted-foreground">
+                                                <p className="text-sm text-muted-foreground">
                                                     {generatedApp.description}
                                                 </p>
                                             </div>
 
-                                            <div className="grid grid-cols-1 gap-3">
+                                            <div className="grid grid-cols-1 gap-2">
                                                 <M3Button
                                                     variant="filled"
                                                     size="sm"
                                                     onClick={() => window.open(generatedApp.previewUrl, '_blank')}
                                                 >
                                                     <Play className="w-4 h-4 mr-2" />
-                                                    Preview App
+                                                    Open in New Tab
                                                 </M3Button>
 
                                                 <M3Button
@@ -415,41 +374,55 @@ export default function GeneratePage() {
                                                     Copy Code
                                                 </M3Button>
                                             </div>
+                                        </div>
+                                    )}
 
-                                            {generatedApp.fragment && generatedApp.fragment.code && (
-                                                <div className="mt-4">
-                                                    <h4 className="m3-title-small font-semibold text-foreground mb-2">
-                                                        Generated Code Preview
-                                                    </h4>
-                                                    <div className="bg-surface-container rounded-lg p-3 max-h-40 overflow-y-auto">
-                                                        <pre className="text-xs text-muted-foreground">
-                                                            {typeof generatedApp.fragment.code === 'string'
-                                                                ? generatedApp.fragment.code.substring(0, 500) + '...'
-                                                                : JSON.stringify(generatedApp.fragment.code, null, 2).substring(0, 500) + '...'
-                                                            }
-                                                        </pre>
-                                                    </div>
-                                                </div>
-                                            )}
+                                    {!isGenerating && !error && !generatedApp && (
+                                        <div className="text-center space-y-3">
+                                            <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center mx-auto">
+                                                <Lightbulb className="w-6 h-6 text-primary" />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-foreground">
+                                                    Ready to Generate
+                                                </h3>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Describe your app idea and we&apos;ll generate it for you
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
+                            </M3CardContent>
+                        </M3Card>
+                    </motion.section>
 
-                                {!isGenerating && !error && !generatedApp && (
-                                    <div className="text-center space-y-4">
-                                        <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto">
-                                            <Lightbulb className="w-8 h-8 text-primary" />
-                                        </div>
-                                        <div>
-                                            <h3 className="m3-title-large font-semibold text-foreground mb-2">
-                                                Ready to Generate
-                                            </h3>
-                                            <p className="m3-body-medium text-muted-foreground">
-                                                Describe your app idea in the chat and we&apos;ll generate it for you
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
+                    {/* Live Preview */}
+                    <motion.section
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="lg:col-span-2"
+                    >
+                        <M3Card variant="elevated" className="h-full">
+                            <M3CardHeader>
+                                <M3CardTitle className="flex items-center gap-2">
+                                    <Eye className="w-5 h-5 text-primary" />
+                                    Live Preview
+                                </M3CardTitle>
+                            </M3CardHeader>
+                            <M3CardContent className="p-0 h-full">
+                                <div className="h-[700px]">
+                                    <LivePreview
+                                        generatedApp={generatedApp}
+                                        isGenerating={isGenerating}
+                                        onDeploy={() => window.open(generatedApp?.deploymentUrl, '_blank')}
+                                        onEdit={() => {
+                                            // Handle edit action
+                                            console.log('Edit app:', generatedApp)
+                                        }}
+                                    />
+                                </div>
                             </M3CardContent>
                         </M3Card>
                     </motion.section>
@@ -511,6 +484,34 @@ export default function GeneratePage() {
                     </div>
                 </motion.section>
             </div>
+
+            {/* DeepSeek Upselling Bot */}
+            <DeepSeekUpsellBot
+                generatedApp={generatedApp}
+                userTier="free"
+                onUpgrade={(feature, price) => {
+                    console.log('Upgrade requested:', feature, price)
+                    // Here you would integrate with Stripe
+                    alert(`Upgrade to ${feature} for $${price}`)
+                }}
+                isVisible={showDeepSeekBot}
+                onToggle={() => setShowDeepSeekBot(false)}
+            />
+            
+            <DeepSeekBotToggle
+                onClick={() => setShowDeepSeekBot(true)}
+                isVisible={showDeepSeekBot}
+            />
         </div>
+    )
+}
+
+export default function GeneratePage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>}>
+            <GeneratePageContent />
+        </Suspense>
     )
 } 

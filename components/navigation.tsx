@@ -2,11 +2,14 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Bell, Settings, User, Menu, X } from 'lucide-react'
+import { useSession, signIn, signOut } from 'next-auth/react'
+import Image from 'next/image'
+import { Search, Bell, Settings, User, Menu, X, LogIn, LogOut } from 'lucide-react'
 import { CreditDisplay } from './credit-display'
 import { ThemeToggle } from './theme-toggle'
 
 export function Navigation() {
+  const { data: session } = useSession()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [notifications, setNotifications] = useState(3)
 
@@ -82,15 +85,48 @@ export function Navigation() {
             <ThemeToggle />
 
             {/* User Profile */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="m3-ripple flex items-center space-x-2 p-2 rounded-full hover:m3-state-hover transition-all duration-200"
-            >
-              <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-primary-foreground" />
+            {session?.user ? (
+              <div className="flex items-center space-x-3">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="m3-ripple flex items-center space-x-2 p-2 rounded-full hover:m3-state-hover transition-all duration-200"
+                >
+                  {session.user.image ? (
+                    <Image 
+                      src={session.user.image} 
+                      alt={session.user.name || 'User'}
+                      width={32}
+                      height={32}
+                      className="h-8 w-8 rounded-full"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
+                      <User className="h-4 w-4 text-primary-foreground" />
+                    </div>
+                  )}
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => signOut()}
+                  className="m3-ripple p-2 rounded-full hover:m3-state-hover transition-all duration-200"
+                  title="Sign out"
+                >
+                  <LogOut className="h-4 w-4 text-foreground" />
+                </motion.button>
               </div>
-            </motion.button>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => signIn()}
+                className="m3-ripple flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-200"
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign In</span>
+              </motion.button>
+            )}
           </div>
         </div>
       </div>
@@ -153,11 +189,11 @@ export function Navigation() {
                   Templates
                 </motion.a>
                 <motion.a
-                  href="/community"
+                  href="/pricing"
                   whileHover={{ x: 4 }}
                   className="block m3-body-medium text-foreground hover:text-primary transition-colors duration-200"
                 >
-                  Community
+                  Pricing
                 </motion.a>
               </div>
             </div>

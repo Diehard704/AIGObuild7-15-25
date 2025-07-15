@@ -42,28 +42,10 @@ const navigationItems = [
         description: 'Browse templates'
     },
     {
-        name: 'Community',
-        href: '/community',
-        icon: Users,
-        description: 'Connect with developers'
-    },
-    {
-        name: 'Code Editor',
-        href: '/code-editor-demo',
-        icon: Code,
-        description: 'Enhanced editor demo'
-    },
-    {
-        name: 'AI Refactor',
-        href: '/refactor-working',
-        icon: Zap,
-        description: 'AI-powered code refactoring'
-    },
-    {
-        name: 'Customizer Demo',
-        href: '/customizer-demo',
+        name: 'Pricing',
+        href: '/pricing',
         icon: Sparkles,
-        description: 'Loading screens & AI customization'
+        description: 'View pricing plans'
     }
 ]
 
@@ -108,7 +90,7 @@ export function Sidebar() {
                             <Sparkles className="w-6 h-6 text-primary-foreground" />
                         </motion.div>
                         <div>
-                            <h1 className="m3-title-large font-bold text-foreground">FragmentsPro</h1>
+                            <h1 className="m3-title-large font-bold text-foreground">aiGo.build</h1>
                             <p className="m3-body-small text-muted-foreground">AI-Powered Development</p>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
 import { M3Button } from '@/components/ui/m3-button'
 import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
@@ -122,31 +123,38 @@ export default function PricingPage() {
     }
   ]
 
+  const { data: session } = useSession()
+
   const handlePurchase = async (tier: PricingTier) => {
+    if (!session) {
+      window.location.href = '/auth/signin'
+      return
+    }
+
     setIsProcessing(true)
     setSelectedPlan(tier.name)
 
     try {
-      const response = await fetch('/api/stripe', {
+      const response = await fetch('/api/payments/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'create-checkout',
+          featureId: tier.name.toLowerCase().replace(' ', '_'),
           amount: tier.price,
-          credits: tier.credits,
-          userID: 'anonymous',
-          email: undefined
+          credits: tier.credits
         })
       })
 
-      if (response.ok) {
-        const { url } = await response.json()
-        window.location.href = url
+      const data = await response.json()
+
+      if (data.success && data.checkoutUrl) {
+        window.location.href = data.checkoutUrl
       } else {
-        console.error('Payment failed')
+        throw new Error(data.error || 'Payment failed')
       }
     } catch (error) {
       console.error('Payment error:', error)
+      alert('Payment failed. Please try again.')
     } finally {
       setIsProcessing(false)
     }
@@ -263,7 +271,7 @@ export default function PricingPage() {
         {/* Benefits Section */}
         <div className="mb-16">
           <h2 className="m3-headline-medium font-bold text-foreground text-center mb-12">
-            Why Choose FragmentsPro?
+            Why Choose aiGo.build?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((benefit, index) => (
@@ -300,7 +308,7 @@ export default function PricingPage() {
             <M3CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <h3 className="m3-title-large font-semibold text-foreground mb-2">FragmentsPro</h3>
+                  <h3 className="m3-title-large font-semibold text-foreground mb-2">aiGo.build</h3>
                   <div className="text-2xl font-bold text-primary mb-2">$9</div>
                   <p className="m3-body-small text-muted-foreground mb-4">5 generations</p>
                   <div className="space-y-2 text-sm">
