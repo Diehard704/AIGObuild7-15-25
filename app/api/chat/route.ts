@@ -46,14 +46,14 @@ export async function POST(req: Request) {
 
   console.log('userID', userID)
   console.log('teamID', teamID)
-  console.log('Using Claude 3.5 Sonnet for AI generation')
+  console.log('Using Claude 4 (Sonnet 4) for AI generation')
 
-  // Create Claude 3.5 Sonnet client with aggressive backend optimization
+  // Create Claude 4 (Sonnet 4) client with enhanced generation capabilities
   const anthropic = createAnthropic({
     apiKey: process.env.ANTHROPIC_API_KEY
   })
   
-  const claudeModel = anthropic('claude-3-5-sonnet-20241022')
+  const claudeModel = anthropic('claude-sonnet-4-20250514')
 
   try {
     const stream = await streamObject({

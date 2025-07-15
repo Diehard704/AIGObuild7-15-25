@@ -8,6 +8,7 @@ import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/u
 import { TypewriterChat } from '@/components/typewriter-chat'
 import { LivePreview } from '@/components/live-preview'
 import { DeepSeekUpsellBot, DeepSeekBotToggle } from '@/components/deepseek-upsell-bot'
+import { AdvancedAIHelper, AIHelperToggle } from '@/components/advanced-ai-helper'
 import {
     Sparkles,
     Rocket,
@@ -41,6 +42,7 @@ function GeneratePageContent() {
     const [generatedApp, setGeneratedApp] = useState<any>(null)
     const [error, setError] = useState<string | null>(null)
     const [showDeepSeekBot, setShowDeepSeekBot] = useState(false)
+    const [showAdvancedAI, setShowAdvancedAI] = useState(false)
 
     const templates = {
         'nextjs-developer': {
@@ -501,6 +503,32 @@ function GeneratePageContent() {
             <DeepSeekBotToggle
                 onClick={() => setShowDeepSeekBot(true)}
                 isVisible={showDeepSeekBot}
+            />
+            
+            {/* Advanced AI Helper */}
+            <AdvancedAIHelper
+                userContext={{
+                    tier: 'free',
+                    generatedApps: 3,
+                    credits: 12,
+                    lastActivity: new Date(),
+                    preferences: ['modern design', 'performance'],
+                    painPoints: ['slow loading', 'mobile responsiveness'],
+                    currentProject: generatedApp
+                }}
+                generatedApp={generatedApp}
+                onUpgrade={(offer) => {
+                    console.log('Upgrade requested:', offer)
+                    // Integrate with Stripe payment
+                    window.location.href = '/pricing'
+                }}
+                isVisible={showAdvancedAI}
+                onToggle={() => setShowAdvancedAI(false)}
+            />
+            
+            <AIHelperToggle
+                onClick={() => setShowAdvancedAI(true)}
+                isVisible={showAdvancedAI}
             />
         </div>
     )

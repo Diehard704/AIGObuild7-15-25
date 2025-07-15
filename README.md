@@ -1,31 +1,60 @@
-# 🚀 aiGo.build - AI-Powered App Generation Platform
+# 🚀 aiGo.build - AI-Powered Website Generator
 
-**Strategic AI development platform with comprehensive backend infrastructure for building amazing applications.**
+<div align="center">
+  <img src="https://img.shields.io/badge/Next.js-15.4.1-black" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5.8.3-blue" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Claude-4.0-purple" alt="Claude 4" />
+  <img src="https://img.shields.io/badge/Stripe-Live-green" alt="Stripe" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License" />
+</div>
 
-## ⚡ AGGRESSIVE BACKEND FEATURES
+<div align="center">
+  <h3>Create spectacular, professional-quality websites with AI in seconds</h3>
+  <p>Powered by Claude 4 (Sonnet 4) • Built with Next.js 15 • Production Ready</p>
+</div>
 
-- **Manus-Style Loading Interface**: Faux computer browsing simulation during app generation
-- **Multi-Framework Support**: Next.js, Vue.js, Streamlit, Python, and more
-- **Real-Time Preview**: Lovable-style live preview with iframe integration  
-- **E2B Deployment**: Seamless sandbox-to-production pipeline
-- **Stripe Payment Integration**: Credit-based pricing (60% cheaper than competitors)
-- **4,000 Tokens Per Generation**: Optimized for comprehensive app creation
-- **Advanced Analytics Dashboard**: Real-time usage tracking and project management
-- **Comprehensive User Interface**: Modern, responsive design with dark theme
+## ✨ PRODUCTION-READY FEATURES
 
-## 🏗️ CURRENT DEVELOPMENT STATUS
+### 🤖 **AI Website Generation**
+- **Claude 4 (Sonnet 4)** for superior website generation
+- **Spectacular designs** inspired by Manus.im quality standards
+- **Professional layouts** with modern animations and interactions
+- **Mobile-first responsive** design patterns
+- **Creative freedom** for portfolio-worthy results
 
-✅ **Landing Page**: TypewriterChat with animated suggestions
-✅ **App Generation**: Complete build pipeline with real API integration
-✅ **Manus-Style Loader**: Faux browsing interface with progress tracking
-✅ **App Preview**: Live iframe preview with code display
-✅ **Payment System**: Stripe integration with credit management
-✅ **Dashboard**: Enhanced analytics with real-time stats and project management
-✅ **Navigation**: Responsive header and sidebar with credit display
-✅ **E2B Integration**: Sandbox deployment infrastructure
-✅ **Pricing Page**: Animated pricing cards with feature comparison
-✅ **Success Page**: Payment confirmation with credit display
-✅ **About Page**: Platform information and technical details
+### 💎 **Advanced AI Assistant**
+- **Lovable.dev-style** intelligent helper with contextual suggestions
+- **Smart upselling** with premium feature recommendations
+- **Real-time chat** with confidence scoring and behavioral triggers
+- **Seamless upgrade flow** integrated with Stripe payments
+- **Premium recommendations** based on user conversation context
+
+### 💳 **Complete Monetization System**
+- **Stripe Live Integration** with secure payment processing
+- **Google OAuth** for seamless user authentication
+- **Tiered Pricing**: Free ($0), Pro ($29), Enterprise ($99)
+- **Premium Upsells**: Design Studio ($19), Performance Rocket ($25), SEO Suite ($28)
+- **One-time purchases** for immediate revenue conversion
+
+### 🛠 **Technical Excellence**
+- **Next.js 15.4.1** with Turbopack for blazing fast builds
+- **TypeScript** for complete type safety
+- **Material Design 3** components with modern aesthetics
+- **Framer Motion** for smooth animations and transitions
+- **E2B Integration** for live sandbox deployment
+- **Production-ready** architecture and security
+
+## 🏗️ PRODUCTION DEPLOYMENT STATUS
+
+✅ **AI Website Generator**: Claude 4 integration with enhanced prompts
+✅ **Advanced AI Helper**: Lovable.dev-inspired assistant with smart upselling
+✅ **Payment System**: Complete Stripe integration with live keys
+✅ **Authentication**: Google OAuth configured for production
+✅ **Live Preview**: Real-time preview with device switching
+✅ **Responsive Design**: Mobile-first with Material Design 3
+✅ **Performance**: Optimized for production deployment
+✅ **Security**: Rate limiting, input validation, secure payments
+✅ **Build System**: Zero errors, ready for deployment
 
 ## 🚀 QUICK START
 
@@ -110,13 +139,22 @@ fragments-backup-original copy 2/
 7. **Deployment**: Optional E2B production deployment
 8. **Dashboard**: Track usage, manage projects, view analytics
 
-## 💳 PRICING STRATEGY
+## 💳 MONETIZATION STRATEGY
 
-- **Starter Pack**: 5 credits for $9 (vs $15 competitors)
-- **Developer Pro**: 15 credits for $24 (vs $40 competitors) 
-- **Agency Scale**: 50 credits for $69 (vs $120 competitors)
+### Subscription Plans
+- **Free**: 5 generations/month, basic templates, community support
+- **Pro** ($29/month): Unlimited generations, premium templates, priority support
+- **Enterprise** ($99/month): Team collaboration, advanced features, SLA guarantee
 
-**60% cost savings compared to Manus and other competitors!**
+### Premium Upsells (One-time purchases)
+- **AI Design Studio Pro** ($19): 10 custom design variations + color palettes
+- **Performance Rocket** ($25): Comprehensive optimization + monitoring
+- **Mobile Optimizer Pro** ($22): Advanced responsive design + touch interactions
+- **SEO Optimizer Suite** ($28): Meta tags + schema markup + performance tracking
+- **Custom Feature Builder** ($49): AI-powered custom development + integrations
+- **AI Assistant Pro** ($35): Unlimited AI chat + code review + bug fixes
+
+**Competitive pricing with multiple revenue streams for maximum conversion!**
 
 ## 📊 DASHBOARD FEATURES
 

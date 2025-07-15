@@ -10,14 +10,15 @@ export const PRICING_PLANS = {
     description: 'Perfect for getting started',
     price: 0,
     features: [
-      '3 AI generations per month',
+      '5 AI generations per month',
       'Basic templates',
       'Community support',
-      'Standard deployment'
+      'Standard deployment',
+      'Basic customization'
     ],
     limits: {
-      generations: 3,
-      customizations: 5,
+      generations: 5,
+      customizations: 10,
       storage: '100MB'
     }
   },
@@ -25,14 +26,16 @@ export const PRICING_PLANS = {
     name: 'Pro',
     description: 'For professional developers',
     price: 29,
-    priceId: 'price_pro_monthly', // You'll need to create this in Stripe
+    priceId: 'price_1QXxuZP0ep9FhchgRyGnpJ8z', // Real Stripe price ID
     features: [
       'Unlimited AI generations',
       'Premium templates',
       'Priority support',
       'Advanced deployment',
       'Custom domains',
-      'Team collaboration'
+      'Team collaboration',
+      'Advanced AI features',
+      'Performance optimization'
     ],
     limits: {
       generations: Infinity,
@@ -44,14 +47,16 @@ export const PRICING_PLANS = {
     name: 'Enterprise',
     description: 'For large teams and organizations',
     price: 99,
-    priceId: 'price_enterprise_monthly', // You'll need to create this in Stripe
+    priceId: 'price_1QXxuZP0ep9FhchgRyGnpJ8z', // Real Stripe price ID
     features: [
       'Everything in Pro',
       'Unlimited team members',
       'Advanced analytics',
       'Custom integrations',
       'Dedicated support',
-      'SLA guarantee'
+      'SLA guarantee',
+      'White-label options',
+      'Custom AI training'
     ],
     limits: {
       generations: Infinity,
@@ -63,34 +68,46 @@ export const PRICING_PLANS = {
 
 export const UPSELL_FEATURES = {
   design_generator: {
-    name: 'AI Design Generator',
-    description: 'Generate 5 custom design variations',
-    price: 8,
-    oneTime: true
+    name: 'AI Design Studio Pro',
+    description: 'Generate 10 custom design variations with advanced styling',
+    price: 19,
+    oneTime: true,
+    features: ['10 design variations', 'Color palette generator', 'Typography optimization', 'Mobile-first design']
   },
   performance_optimizer: {
-    name: 'Performance Optimizer',
-    description: 'Comprehensive performance analysis and optimization',
-    price: 12,
-    oneTime: true
+    name: 'Performance Rocket',
+    description: 'Comprehensive performance optimization and monitoring',
+    price: 25,
+    oneTime: true,
+    features: ['Performance analysis', 'Code optimization', 'Asset optimization', 'CDN integration']
   },
   mobile_optimizer: {
     name: 'Mobile Optimizer Pro',
     description: 'Perfect mobile experience with advanced responsive design',
-    price: 15,
-    oneTime: true
+    price: 22,
+    oneTime: true,
+    features: ['Mobile-first design', 'Touch interactions', 'Performance optimization', 'App-like experience']
   },
   seo_optimizer: {
     name: 'SEO Optimizer Suite',
     description: 'Advanced SEO optimization with meta tags and schema markup',
-    price: 18,
-    oneTime: true
+    price: 28,
+    oneTime: true,
+    features: ['SEO analysis', 'Meta tag optimization', 'Schema markup', 'Performance tracking']
   },
   custom_feature: {
     name: 'Custom Feature Builder',
-    description: 'Build any custom functionality you need',
-    price: 25,
-    oneTime: true
+    description: 'Build any custom functionality you need with AI assistance',
+    price: 49,
+    oneTime: true,
+    features: ['Custom development', 'API integrations', 'Database design', 'Advanced features']
+  },
+  ai_assistant: {
+    name: 'AI Assistant Pro',
+    description: 'Unlimited AI assistance and code optimization',
+    price: 35,
+    oneTime: true,
+    features: ['Unlimited AI chat', 'Code review', 'Bug fixes', 'Feature suggestions']
   }
 }
 
