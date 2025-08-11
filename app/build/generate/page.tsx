@@ -5,10 +5,13 @@ import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { M3Button } from '@/components/ui/m3-button'
 import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
-import { TypewriterChat } from '@/components/typewriter-chat'
-import { LivePreview } from '@/components/live-preview'
-import { DeepSeekUpsellBot, DeepSeekBotToggle } from '@/components/deepseek-upsell-bot'
-import { AdvancedAIHelper, AIHelperToggle } from '@/components/advanced-ai-helper'
+import dynamic from 'next/dynamic'
+const TypewriterChat = dynamic(() => import('@/components/typewriter-chat').then(m => m.TypewriterChat), { ssr: false })
+const LivePreview = dynamic(() => import('@/components/live-preview').then(m => m.LivePreview), { ssr: false, loading: () => null })
+const DeepSeekUpsellBotDynamic = dynamic(() => import('@/components/deepseek-upsell-bot').then(m => m.DeepSeekUpsellBot), { ssr: false })
+const DeepSeekBotToggle = dynamic(() => import('@/components/deepseek-upsell-bot').then(m => m.DeepSeekBotToggle), { ssr: false })
+const AdvancedAIHelperDynamic = dynamic(() => import('@/components/advanced-ai-helper').then(m => m.AdvancedAIHelper), { ssr: false })
+const AIHelperToggle = dynamic(() => import('@/components/advanced-ai-helper').then(m => m.AIHelperToggle), { ssr: false })
 import {
     Sparkles,
     Rocket,
@@ -59,16 +62,10 @@ function GeneratePageContent() {
         },
         'streamlit-developer': {
             name: 'Streamlit Developer',
-            description: 'Data science applications with visualizations',
-            icon: <TrendingUp className="w-6 h-6" />,
-            color: 'from-tertiary to-warning'
+            description: 'Data apps and dashboards with Python',
+            icon: <Sparkles className="w-6 h-6" />,
+            color: 'from-tertiary to-primary'
         },
-        'gradio-developer': {
-            name: 'Gradio Developer',
-            description: 'Machine learning interfaces and model deployment',
-            icon: <Zap className="w-6 h-6" />,
-            color: 'from-warning to-error'
-        }
     }
 
     const selectedTemplate = template ? templates[template as keyof typeof templates] : null
@@ -488,48 +485,28 @@ function GeneratePageContent() {
             </div>
 
             {/* DeepSeek Upselling Bot */}
-            <DeepSeekUpsellBot
-                generatedApp={generatedApp}
-                userTier="free"
-                onUpgrade={(feature, price) => {
-                    console.log('Upgrade requested:', feature, price)
-                    // Here you would integrate with Stripe
-                    alert(`Upgrade to ${feature} for $${price}`)
-                }}
-                isVisible={showDeepSeekBot}
-                onToggle={() => setShowDeepSeekBot(false)}
-            />
+            <Suspense fallback={null}>
+                {showDeepSeekBot ? <DeepSeekUpsellBotDynamic /> : null}
+            </Suspense>
             
-            <DeepSeekBotToggle
-                onClick={() => setShowDeepSeekBot(true)}
-                isVisible={showDeepSeekBot}
-            />
-            
-            {/* Advanced AI Helper */}
-            <AdvancedAIHelper
-                userContext={{
-                    tier: 'free',
-                    generatedApps: 3,
-                    credits: 12,
-                    lastActivity: new Date(),
-                    preferences: ['modern design', 'performance'],
-                    painPoints: ['slow loading', 'mobile responsiveness'],
-                    currentProject: generatedApp
-                }}
-                generatedApp={generatedApp}
-                onUpgrade={(offer) => {
-                    console.log('Upgrade requested:', offer)
-                    // Integrate with Stripe payment
-                    window.location.href = '/pricing'
-                }}
-                isVisible={showAdvancedAI}
-                onToggle={() => setShowAdvancedAI(false)}
-            />
-            
-            <AIHelperToggle
-                onClick={() => setShowAdvancedAI(true)}
-                isVisible={showAdvancedAI}
-            />
+            <Suspense fallback={null}>
+                {showAdvancedAI ? (
+                    <AdvancedAIHelperDynamic
+                        userContext={{
+                            tier: 'free',
+                            generatedApps: 0,
+                            credits: 0,
+                            lastActivity: new Date(),
+                            preferences: [],
+                            painPoints: [],
+                        }}
+                        generatedApp={generatedApp}
+                        onUpgrade={() => { window.location.href = '/pricing' }}
+                        isVisible={showAdvancedAI}
+                        onToggle={() => setShowAdvancedAI(false)}
+                    />
+                ) : null}
+            </Suspense>
         </div>
     )
 }

@@ -1,7 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { TypewriterChat } from '@/components/typewriter-chat'
+import dynamic from 'next/dynamic'
+const TypewriterChat = dynamic(() => import('@/components/typewriter-chat').then(m => m.TypewriterChat), { ssr: false })
 import { M3Button } from '@/components/ui/m3-button'
 import { M3Card, M3CardContent, M3CardHeader, M3CardTitle } from '@/components/ui/m3-card'
 import {
@@ -118,24 +119,21 @@ export default function LandingPage() {
             <M3Button
               size="lg"
               variant="outlined"
-              onClick={() => window.location.href = '/templates'}
+              className="group"
+              onClick={() => window.location.href = '/pricing'}
             >
               <Sparkles className="mr-2 h-5 w-5" />
-              Browse Templates
+              Explore Templates
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </M3Button>
           </motion.div>
 
           {/* Typewriter Chat */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="max-w-4xl mx-auto"
-          >
+          <div className="max-w-4xl mx-auto">
             <TypewriterChat onGenerate={(prompt) => {
               window.location.href = `/build/generate?prompt=${encodeURIComponent(prompt)}&template=nextjs-developer`
             }} isLoading={false} />
-          </motion.div>
+          </div>
         </div>
 
         {/* Floating Elements */}

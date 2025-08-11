@@ -4,25 +4,41 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { type ThemeProviderProps } from 'next-themes'
 import { SessionProvider } from 'next-auth/react'
 import { Session } from 'next-auth'
-import posthog from 'posthog-js'
-import { PostHogProvider as PostHogProviderJS } from 'posthog-js/react'
-
-if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_ENABLE_POSTHOG) {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY ?? '', {
-    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    person_profiles: 'identified_only',
-    session_recording: {
-      recordCrossOriginIframes: true,
-    }
-  })
-}
+import { useEffect, useState } from 'react'
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  return process.env.NEXT_PUBLIC_ENABLE_POSTHOG ? (
-    <PostHogProviderJS client={posthog}>{children}</PostHogProviderJS>
-  ) : (
-    children
-  )
+  const [ph, setPh] = useState<any>(null)
+  const [PHProvider, setPHProvider] = useState<any>(null)
+
+  useEffect(() => {
+    let didCancel = false
+    async function setup() {
+      if (!process.env.NEXT_PUBLIC_ENABLE_POSTHOG) return
+      const [{ default: posthog }, phReact] = await Promise.all([
+        import('posthog-js'),
+        import('posthog-js/react'),
+      ])
+      if (didCancel) return
+      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY ?? '', {
+        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+        person_profiles: 'identified_only',
+        session_recording: {
+          recordCrossOriginIframes: true,
+        },
+      })
+      setPh(posthog)
+      setPHProvider(() => phReact.PostHogProvider)
+    }
+    setup()
+    return () => {
+      didCancel = true
+    }
+  }, [])
+
+  if (!process.env.NEXT_PUBLIC_ENABLE_POSTHOG || !ph || !PHProvider) {
+    return children as React.ReactElement
+  }
+  return <PHProvider client={ph}>{children}</PHProvider>
 }
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
