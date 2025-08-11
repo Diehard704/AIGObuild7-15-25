@@ -1,8 +1,10 @@
 import Stripe from 'stripe'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-})
+export const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-02-24.acacia',
+    })
+  : undefined as unknown as Stripe
 
 export const PRICING_PLANS = {
   free: {
@@ -117,6 +119,7 @@ export async function createCheckoutSession(
   successUrl: string,
   cancelUrl: string
 ) {
+  if (!stripe) throw new Error('Stripe not configured')
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     payment_method_types: ['card'],
@@ -142,6 +145,7 @@ export async function createOneTimePayment(
   successUrl: string,
   cancelUrl: string
 ) {
+  if (!stripe) throw new Error('Stripe not configured')
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     payment_method_types: ['card'],
@@ -166,6 +170,7 @@ export async function createOneTimePayment(
 }
 
 export async function createCustomer(email: string, name: string) {
+  if (!stripe) throw new Error('Stripe not configured')
   const customer = await stripe.customers.create({
     email,
     name,
@@ -175,11 +180,13 @@ export async function createCustomer(email: string, name: string) {
 }
 
 export async function getCustomer(customerId: string) {
+  if (!stripe) throw new Error('Stripe not configured')
   const customer = await stripe.customers.retrieve(customerId)
   return customer
 }
 
 export async function createBillingPortalSession(customerId: string, returnUrl: string) {
+  if (!stripe) throw new Error('Stripe not configured')
   const session = await stripe.billingPortal.sessions.create({
     customer: customerId,
     return_url: returnUrl,
